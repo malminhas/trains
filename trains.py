@@ -25,9 +25,15 @@
 # Version
 # -------
 # 10.06.19  0.1   Initial version based on https://github.com/chrishutchinson/train-departure-screen/blob/master/src/trains.py
+# 11.06.19  0.2   Added docopt support
 # 
 
 import requests
+
+PROGRAM = __file__
+VERSION = '0.2'
+DATE = '11.06.19'
+AUTHOR= 'Mal Minhas'
 
 def readCred(fname):
     with open(fname,'r') as f:
@@ -37,30 +43,15 @@ def readCred(fname):
 APP_ID = readCred('.transportAppId')
 APP_KEY = readCred('.transportAppKey')
 
-def getTrainsTo(station_code,dest_code,station_name=None,dest_name=None):
-    # station_code is 3 letter string.  eg. 'TWY','PADD'
-    # from_offset is one hour in past by default
-    # to_offset is two hours into future by default
-    # type can be arrival|departure|pass
-    url = f'http://transportapi.com/v3/uk/train/station/{station_code}/live.json'
-    params = {'app_id': APP_ID, 'app_key': APP_KEY, 'station_code':station_code, 'destination': dest_code, 'type': 'departure'}
-    if station_name:
-        params['station_name'] = station_name
-    r = requests.get(url, params)
-    data = r.json()
-    data['destination_code'] = dest_code
-    data['destination_name'] = dest_name
-    return data
-
-def getTrainsCallingAt(station_code,dest_code,station_name=None,dest_name=None):
+def getTrainsCallingAt(station_code,dest_code,dest_name):
     # station_code is 3 letter string.  eg. 'TWY','PADD'
     # from_offset is one hour in past by default
     # to_offset is two hours into future by default
     # type can be arrival|departure|pass
     url = f'http://transportapi.com/v3/uk/train/station/{station_code}/live.json'
     params = {'app_id': APP_ID, 'app_key': APP_KEY, 'station_code':station_code, 'calling_at': dest_code, 'type': 'departure'}
-    if station_name:
-        params['station_name'] = station_name
+    #if station_name:
+    #    params['station_name'] = station_name
     r = requests.get(url, params)
     data = r.json()
     data['destination_code'] = dest_code
@@ -138,8 +129,42 @@ def printStopNames(stops):
 
 
 if __name__ == '__main__':
-    source = 'TWY'
-    dest = 'PAD'
-    #print(getTrainsTo(source,dest))                                            # OK
-    formatTrains(getTrainsTo(source,dest,dest_name='London Paddington'))        # OK
-    formatTrains(getTrainsCallingAt(dest,source,dest_name='Twyford'))           # OK
+    import docopt
+
+    usage = """
+    {}
+    ---------
+    Usage:
+    {} <from> <to> <dest_name>
+    {} -h | --help
+    {} -V | --version
+
+    Options:
+    -h --help               Show this screen.
+    -V --version            Show version.
+
+    Examples
+    1. trains from TWY to PAD:
+    {} TWY PAD
+    
+    """.format(
+            *tuple([PROGRAM] * 5)
+    )
+
+    arguments = docopt.docopt(usage)
+    # print(arguments)
+    verbose = False
+    force = False
+    if arguments.get("--verbose") or arguments.get("-v"):
+        verbose = True
+    if arguments.get("--version") or arguments.get("-V"):
+        print(f'{PROGRAM} version {VERSION}.  Author: {AUTHOR}')
+    elif arguments.get("--help") or arguments.get("-h"):
+        print(usage)
+    else:
+        source = arguments.get('<from>')
+        dest = arguments.get('<to>')
+        dest_name = arguments.get('<dest_name>')
+        assert(len(source) == 3 and len(dest) == 3)
+        trains = getTrainsCallingAt(source,dest,dest_name)     # OK
+        formatTrains(trains)
