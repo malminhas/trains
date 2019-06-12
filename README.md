@@ -38,7 +38,20 @@ trains.js
 node.js version. 
 ```
 $ node trains.js -h
+trains.js
+---------
+Usage:
+  trains.js <from> <to> <dest_name>
+  trains.js -h | --help
+  trains.js --version
 
+Options:
+  -h --help               Show this screen.
+  -V --version            Show version.
+
+Examples
+1. trains from TWY to PAD:
+trains.js TWY PAD
 ```
 Here's the same invocation as above for trains from London Paddington to Reading:
 ```
