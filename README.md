@@ -1,6 +1,6 @@
 trains
 ======
-Simple command line script for getting UK train times from A to B using the [transportapi.com](transportapi.com) digital platform for transport.  Inspired by [this codebase](https://github.com/chrishutchinson/train-departure-screen/blob/master/src/trains.py) developed for [a really cool Raspberry Pi-powered train board](https://twitter.com/chrishutchinson/status/1136743837244768257) by Chris Hutchinson (@chrishutchinson) which also uses the same API.  The purpose of the script is to allow me to use the command line to conveniently determine the times of the next few trains from my London station which happens to be Paddington.
+Simple command line script for getting UK train times from A to B using the [transportapi.com](transportapi.com) digital platform for transport.  Inspired by [this codebase](https://github.com/chrishutchinson/train-departure-screen/blob/master/src/trains.py) developed for [a really cool Raspberry Pi-powered train board](https://twitter.com/chrishutchinson/status/1136743837244768257) built by Chris Hutchinson (@chrishutchinson) which also uses the same API.  The purpose of the script is to allow me to use the command line to conveniently determine the times of the next few trains from my London station which happens to be Paddington.
 
 trains.py
 ---------
