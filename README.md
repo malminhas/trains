@@ -19,8 +19,8 @@ $ python trains.py -h
    -V --version            Show version.
 
    Examples
-   1. trains from TWY to PAD:
-   trains.py TWY PAD
+   1. trains from RDG to PAD:
+   trains.py RDG PAD
 ```
 Here's an example invocation for trains from London Paddington to Reading:
 ```
@@ -50,8 +50,8 @@ Options:
   -V --version            Show version.
 
 Examples
-1. trains from TWY to PAD:
-trains.js TWY PAD
+1. trains from RDG to PAD:
+trains.js RDG PAD
 ```
 Here's the same invocation as above for trains from London Paddington to Reading:
 ```
