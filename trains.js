@@ -35,7 +35,7 @@ const fetch = require('node-fetch');
 const PROGRAM = 'trains.js'
 const VERSION = '0.2'
 const DATE = '11.06.19'
-const AUTHOR= 'Mal Minhas'
+const AUTHOR = 'Mal Minhas'
 
 const APP_ID = readCred('.transportAppId')
 const APP_KEY = readCred('.transportAppKey')
@@ -59,7 +59,7 @@ function getTrainsCallingAt(station_code,dest_code,dest_name) {
       .then(response => response.json())
       .then(data => {
         data['destination_code'] = dest_code
-        data['destination_name'] = dest_name       
+        data['destination_name'] = dest_name    
         formatTrains(data)
       })
       .catch(() => {
@@ -128,16 +128,14 @@ function formatDeparture(train,stops,d){
     return departure
 }
 
-function formatTrains(d) {
+function formatTrains(data) {
     // Keys: 'date', 'time_of_day', 'request_time', 'station_name', 'station_code', 'departures'
     // where 'departures' is a dict with one key 'all' which is a list of dicts of train departures
-    const header = formatHeader(d)
+    const header = formatHeader(data)
     printHeader(header)
-    let trains = d.departures.all
+    let trains = data.departures.all
     trains.forEach(train => {
-        //console.log(`${element.textContent}`)
-        let stops = []
-        getStops(train, d)
+        getStops(train, data)
     })
 }
 
@@ -176,8 +174,8 @@ Options:
   -V --version            Show version.
 
 Examples
-1. trains from TWY to PAD:
-${PROGRAM} TWY PAD
+1. trains from RDG to PAD:
+${PROGRAM} RDG PAD
 `
 
 const {docopt} = require('docopt');

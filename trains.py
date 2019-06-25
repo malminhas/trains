@@ -144,8 +144,8 @@ if __name__ == '__main__':
     -V --version            Show version.
 
     Examples
-    1. trains from TWY to PAD:
-    {} TWY PAD
+    1. trains from RDG to PAD:
+    {} RDG PAD
     
     """.format(
             *tuple([PROGRAM] * 5)
