@@ -43,7 +43,7 @@ def readCred(fname):
 APP_ID = readCred('.transportAppId')
 APP_KEY = readCred('.transportAppKey')
 
-def getTrainsCallingAt(station_code,dest_code,dest_name):
+def getTrainsCallingAt(station_code,dest_code,dest_name,verbose=False):
     # station_code is 3 letter string.  eg. 'TWY','PADD'
     # from_offset is one hour in past by default
     # to_offset is two hours into future by default
@@ -52,10 +52,12 @@ def getTrainsCallingAt(station_code,dest_code,dest_name):
     params = {'app_id': APP_ID, 'app_key': APP_KEY, 'station_code':station_code, 'calling_at': dest_code, 'type': 'departure'}
     #if station_name:
     #    params['station_name'] = station_name
+    verbose and print(url)
     r = requests.get(url, params)
     data = r.json()
     data['destination_code'] = dest_code
     data['destination_name'] = dest_name
+    verbose and print(data)
     return data
 
 def procStop(stop):
@@ -104,13 +106,15 @@ def formatDeparture(train,stops,d):
     departure += f" going to {d.get('destination_name')} platform {dest.get('platform')}. {len(route)} stops:"
     return departure
 
-def formatTrains(d):
+def formatTrains(d,verbose):
     # Keys: 'date', 'time_of_day', 'request_time', 'station_name', 'station_code', 'departures'
     # where 'departures' is a dict with one key 'all' which is a list of dicts of train departures
     printHeader(formatHeader(d))
     trains = d.get('departures').get('all')
+    verbose and print(f'All trains:\n{trains}')
     for train in trains:
         stops = getStops(train.get('service_timetable').get('id'),d.get('station_code'),d.get('destination_code'))
+        verbose and print(f'Train {train.get("train_uid")} stopping point details:\n{stops}')
         trainDetails = formatDeparture(train,stops,d)
         printTrainDetails(trainDetails,stops)
 
@@ -135,7 +139,7 @@ if __name__ == '__main__':
     {}
     ---------
     Usage:
-    {} <from> <to> <dest_name>
+    {} <from> <to> <dest_name> [-v]
     {} -h | --help
     {} -V | --version
 
@@ -166,5 +170,5 @@ if __name__ == '__main__':
         dest = arguments.get('<to>')
         dest_name = arguments.get('<dest_name>')
         assert(len(source) == 3 and len(dest) == 3)
-        trains = getTrainsCallingAt(source,dest,dest_name)     # OK
-        formatTrains(trains)
+        trains = getTrainsCallingAt(source,dest,dest_name,verbose)     # OK
+        formatTrains(trains,verbose)
