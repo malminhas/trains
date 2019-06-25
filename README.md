@@ -2,6 +2,18 @@ trains
 ======
 Command line tools for getting UK train times from A to B using the [transportapi.com](transportapi.com) digital platform for transport.  Inspired by [this codebase](https://github.com/chrishutchinson/train-departure-screen/blob/master/src/trains.py) developed for [this really cool Raspberry Pi-powered train board](https://twitter.com/chrishutchinson/status/1136743837244768257) built by Chris Hutchinson (@chrishutchinson) which also uses the same [transportapi.com](transportapi.com) API.  The purpose of the script is to allow me to use the command line to conveniently determine the times of the next few trains to and from my London station which happens to be Paddington.
 
+Prerequisites
+-------------
+* **Python**: You will need to install and activate a virtual environment (virtualenv).  In this example it is called `tr`.  Once your are in your virtualenv you can `pip install` dependencies as follows:
+```
+(tr) $ pip install -r requirements.txt
+```
+* **node.js**: You will need `npm` available on your system.  By default, `npm install` will install all modules listed as dependencies in `package.json`.
+```
+$ npm install
+```
+* **[transportapi.com](transportapi.com)**: You will need to signup with the service, create an app, obtain a API app Id plus corresponding key and store them in `.transportAppId` and `.transportAppKey` respectively.  See [here](https://developer.transportapi.com/) for more information on how to do this.
+
 trains.py
 ---------
 Python version.
@@ -103,15 +115,6 @@ OXF 15:01 -> PAD 15:59 => STARTS HERE
 	Train C20808 (GW) from Oxford arriving at Oxford on platform 3 going to London Paddington platform 5. 4 stops:
 	Oxford,Reading,Slough,London Paddington
 ```
-
-Installation
-------------
-* Python: see requirements.txt:
-```
-$ pip install > requirements.txt
-```
-* Node.js: see `package.json`
-
-Notes on implementation
------------------------
+Implementation notes
+--------------------
 Both scripts share similar structure and use `docopt` for command line argument handling.  `requests` is used for invoking [transportapi.com](transportapi.com) from Python. `node-fetch` does the equivalent job in the node.js environment.   Multiple calls need to be made to [transportapi.com](transportapi.com) to generate the output.  A first call is made to get information about the trains in the next 2 hour window.  Further calls need to be made on each train to get information about where it is stopping.  The results are stitched together in the output.
