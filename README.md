@@ -1,6 +1,6 @@
 trains
 ======
-Simple command line script for getting UK train times from A to B using the [transportapi.com](transportapi.com) digital platform for transport.  Inspired by [this codebase](https://github.com/chrishutchinson/train-departure-screen/blob/master/src/trains.py) developed for [this really cool Raspberry Pi-powered train board](https://twitter.com/chrishutchinson/status/1136743837244768257) built by Chris Hutchinson (@chrishutchinson) which also uses the same [transportapi.com](transportapi.com) API.  The purpose of the script is to allow me to use the command line to conveniently determine the times of the next few trains to and from my London station which happens to be Paddington.
+Command line tools for getting UK train times from A to B using the [transportapi.com](transportapi.com) digital platform for transport.  Inspired by [this codebase](https://github.com/chrishutchinson/train-departure-screen/blob/master/src/trains.py) developed for [this really cool Raspberry Pi-powered train board](https://twitter.com/chrishutchinson/status/1136743837244768257) built by Chris Hutchinson (@chrishutchinson) which also uses the same [transportapi.com](transportapi.com) API.  The purpose of the script is to allow me to use the command line to conveniently determine the times of the next few trains to and from my London station which happens to be Paddington.
 
 trains.py
 ---------
@@ -44,7 +44,7 @@ OXF 15:01 -> PAD 15:59 => STARTS HERE
 
 trains.js
 ---------
-node.js version built using promise flow where code is daisy-chained in consecutive `.then()` method calls on promises.  This allows a faster response than in the Python case where all the calls are made in serial.  However, the responses aren't time-ordered:
+node.js version built using promise flow where code is daisy-chained in consecutive `.then()` method calls on promises and a `payload` object progressively added to along the way.  This allows a faster response than in the Python case where all the calls are made in serial.  However, the responses aren't currently time-ordered.  It's possible to improve the promise flow so that all output is deferred to the end when `payload` has completed and can be sorted.  That is tackled in the async-await version of the code:
 ```
 $ node trains.js -h
 trains.js
@@ -106,4 +106,4 @@ OXF 15:01 -> PAD 15:59 => STARTS HERE
 
 Notes on implementation
 -----------------------
-Both scripts share similar structure and use `docopt` for command line argument handling.  `requests` is used for invoking transportapi.com from Python. `node-fetch` does the equivalent job in the node.js environment.   Multiple calls need to be made to [transportapi.com](transportapi.com) to generate the output.  A first call is made to get information about the trains in the next 2 hour window.  Further calls need to be made on each train to get information about where it is stopping.  The results are stitched together in the output.
+Both scripts share similar structure and use `docopt` for command line argument handling.  `requests` is used for invoking [transportapi.com](transportapi.com) from Python. `node-fetch` does the equivalent job in the node.js environment.   Multiple calls need to be made to [transportapi.com](transportapi.com) to generate the output.  A first call is made to get information about the trains in the next 2 hour window.  Further calls need to be made on each train to get information about where it is stopping.  The results are stitched together in the output.
