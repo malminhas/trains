@@ -31,6 +31,9 @@ Version
 
 const fs = require('fs')
 const fetch = require('node-fetch');
+// Needed for older node versions.  
+// See: https://stackoverflow.com/questions/52566578/url-is-not-defined-in-node-js
+const URL = require('url').URL;
 
 const PROGRAM = 'trains.js'
 const VERSION = '0.2'
