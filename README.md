@@ -104,6 +104,14 @@ OXF 15:01 -> PAD 15:59 => STARTS HERE
 	Oxford,Reading,Slough,London Paddington
 ```
 
+Installation
+------------
+* Python: see requirements.txt:
+```
+$ pip install > requirements.txt
+```
+* Node.js: see `package.json`
+
 Notes on implementation
 -----------------------
 Both scripts share similar structure and use `docopt` for command line argument handling.  `requests` is used for invoking [transportapi.com](transportapi.com) from Python. `node-fetch` does the equivalent job in the node.js environment.   Multiple calls need to be made to [transportapi.com](transportapi.com) to generate the output.  A first call is made to get information about the trains in the next 2 hour window.  Further calls need to be made on each train to get information about where it is stopping.  The results are stitched together in the output.
