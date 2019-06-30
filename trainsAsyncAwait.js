@@ -11,10 +11,12 @@ Description
 -----------
 transportAPI is documented here: https://developer.transportapi.com/docs?raml=https://transportapi.com/v3/raml/transportapi.raml
 More on three letter train codes here: http://www.railwaycodes.org.uk/crs/CRS0.shtm
+The .csv used in this code is available here: https://www.nationalrail.co.uk/stations_destinations/48541.aspx 
+A local utility module called stationNames.js uses this .csv to convert between three-letter codes and verbose station names.
 Some examples are:
 1. London Paddington = PAD
 2. London Waterloo = WAT
-3. London Bridge = LD
+3. London Bridge = LBG
 
 Installation
 ------------
@@ -25,18 +27,20 @@ Version
 -------
 11.06.19  0.1   Initial version based on https://github.com/chrishutchinson/train-departure-screen/blob/master/src/trains.py
 12.06.19  0.2   Added docopt support
+30.06.19  0.2   Added input validation support and tweaked command line input to remove verbose destination station name
 */ 
 
 'use strict';
 
+const stationNames = require('./stationNames')
 const fs = require('fs')
 const fetch = require('node-fetch');
 // See: https://stackoverflow.com/questions/52566578/url-is-not-defined-in-node-js
 const URL = require('url').URL;
 
 const PROGRAM = 'trainsAsyncAwait.js'
-const VERSION = '0.1'
-const DATE = '11.06.19'
+const VERSION = '0.3'
+const DATE = '30.06.19'
 const AUTHOR = 'Mal Minhas'
 
 const APP_ID = readCred('.transportAppId')
@@ -48,17 +52,18 @@ function readCred(fname) {
 
 async function getTrainsCallingAt(payload) {
     // destructure payload
-    const {station_code,dest_code,dest_name} = payload
-    // validate input
-    if (!station_code || station_code.length !== 3 || !dest_code || dest_code.length !== 3){
-        console.log(`Invalid input parameters`)
-        throw new Error(error);
-    }
+    const {station_code,dest_code} = payload
+    // validate inputs - will throw error if there is a problem
+    const sts = stationNames.validateInputs(station_code,dest_code)
+    const stationName = sts.from
+    const destName = sts.to
+    //console.log(`from = '${stationName} (${station_code}) to = '${destName}' (${dest_code})`)
+    //payload.station_name = stationName
     // get url with query params
     let url = new URL(`http://transportapi.com/v3/uk/train/station/${station_code}/live.json`)
     let params = {  'app_id': APP_ID, 
                     'app_key': APP_KEY, 
-                    //'station_name':station_name, 
+                    'station_name':stationName, 
                     'station_code':station_code, 
                     'calling_at': dest_code, 
                     'type': 'departure'}
@@ -74,7 +79,8 @@ async function getTrainsCallingAt(payload) {
         payload.time_of_day = data.time_of_day
         payload.departures = data.departures.all
         payload.station_name = data.station_name
-        //payload.data = data 
+        payload.dest_name = destName
+        //payload.data = data
         return payload
     }
     catch (error){
@@ -134,18 +140,19 @@ async function getAllTrainStops(payload) {
     return payload
 }
 
-function printTrains(payload){
+function formatTrains(payload){
     let trains = []
+    let output = ''
 
-    function printHeader(payload){
+    function formatHeader(payload){
         let header = `==== Trains from ${payload.station_name} (${payload.station_code}) to ${payload.dest_name} `
         header += `(${payload.dest_code}) ${payload.time_of_day} ${payload.date} ====`
-        console.log('='.repeat(header.length))
-        console.log(header)
-        console.log('='.repeat(header.length))
+        output += '='.repeat(header.length) + '\n'
+        output += header  + '\n'
+        output += '='.repeat(header.length) + '\n'
     }
     
-    printHeader(payload);
+    formatHeader(payload);
     payload.departures.forEach(train => {
         let stops = train.stops
         let source = stops.filter(stop => stop.station_code === payload.station_code)[0]
@@ -163,22 +170,23 @@ function printTrains(payload){
     trains.sort((a, b) => a.time.localeCompare(b.time));
 
     // And then print them
-    function printTrains(departure){
-        console.log(departure)
+    function formatTrain(departure){
+        output += departure + '\n'
     }
-    function printStopNames(stops){
+    function formatStopNames(stops){
         let stopNames = []
         let stopsOnRoute = stops.filter(stop => stop.on_route === true)
         stopsOnRoute.forEach(stop => {
             stopNames.push(stop.station_name)
         })
-        console.log(`\t${stopNames.join(',')}`)
+        output += `\t${stopNames.join(',')}` + '\n'
     }
     
     trains.forEach(train => {
-        printTrains(train.departure)
-        printStopNames(train.stops)
+        formatTrain(train.departure)
+        formatStopNames(train.stops)
     })
+    return output
 }
 
 // -----------------------
@@ -187,7 +195,7 @@ const doc = `
 ${PROGRAM}
 ---------
 Usage:
-  ${PROGRAM} <from> <to> <dest_name>
+  ${PROGRAM} <from> <to>
   ${PROGRAM} -h | --help
   ${PROGRAM} --version
 
@@ -211,13 +219,13 @@ let args = docopt(doc, {
 
 const station = args['<from>']
 const dest = args['<to>']
-const dest_name = args['<dest_name>']
+//const dest_name = args['<dest_name>']
 
 async function startFlow() {
 	let payload = {
         station_code: station,
         dest_code: dest,
-        dest_name: dest_name
+        //dest_name: dest_name
     }
     payload = await getTrainsCallingAt(payload)
     payload = await getAllTrainStops(payload)
@@ -226,5 +234,6 @@ async function startFlow() {
 
 startFlow()
 	.then(payload => {
-        printTrains(payload)
+        const output = formatTrains(payload)
+        console.log(output)
 	})

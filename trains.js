@@ -25,10 +25,18 @@ Version
 -------
 11.06.19  0.1   Initial version based on https://github.com/chrishutchinson/train-departure-screen/blob/master/src/trains.py
 12.06.19  0.2   Added docopt support
+30.06.19  0.3   Added input validation support
+
+Todo
+----
+Note the responses returned from this utility are NOT ordered properly in time.console.  
+In order to fix that, we need to alter the promise flow to sort trains by departure time 
+as we are doing in trainsAsyncAwait.js.
 */ 
 
 'use strict';
 
+const stationNames = require('./stationNames')
 const fs = require('fs')
 const fetch = require('node-fetch');
 // Needed for older node versions.  
@@ -36,8 +44,8 @@ const fetch = require('node-fetch');
 const URL = require('url').URL;
 
 const PROGRAM = 'trains.js'
-const VERSION = '0.2'
-const DATE = '11.06.19'
+const VERSION = '0.3'
+const DATE = '30.06.19'
 const AUTHOR = 'Mal Minhas'
 
 const APP_ID = readCred('.transportAppId')
@@ -47,11 +55,11 @@ function readCred(fname) {
     return fs.readFileSync(fname, 'utf8');
 }
 
-function getTrainsCallingAt(station_code,dest_code,dest_name) {
+function getTrainsCallingAt(station_code,station_name,dest_code,dest_name) {
     let url = new URL(`http://transportapi.com/v3/uk/train/station/${station_code}/live.json`)
     let params = {  'app_id': APP_ID, 
                     'app_key': APP_KEY, 
-                    //'station_name':station_name, 
+                    'station_name':station_name, 
                     'station_code':station_code, 
                     'calling_at': dest_code, 
                     'type': 'departure'}
@@ -168,7 +176,7 @@ const doc = `
 ${PROGRAM}
 ---------
 Usage:
-  ${PROGRAM} <from> <to> <dest_name>
+  ${PROGRAM} <from> <to>
   ${PROGRAM} -h | --help
   ${PROGRAM} --version
 
@@ -190,9 +198,10 @@ let args = docopt(doc, {
   version: `${VERSION} ${DATE} ${AUTHOR}`
 })
 
-const station = args['<from>']
-const dest = args['<to>']
-const dest_name = args['<dest_name>']
-if (station && station.length === 3 && dest && dest.length === 3){
-    getTrainsCallingAt(station,dest,dest_name)    // OK
-}
+const station_code = args['<from>']
+const dest_code = args['<to>']
+// validate inputs - will throw error if there is a problem
+const sts = stationNames.validateInputs(station_code,dest_code)
+const stationName = sts.from
+const destName = sts.to
+getTrainsCallingAt(station_code,stationName,dest_code,destName)    // OK
