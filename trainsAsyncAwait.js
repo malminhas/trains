@@ -191,37 +191,7 @@ function formatTrains(payload){
 
 // -----------------------
 
-const doc = `
-${PROGRAM}
----------
-Usage:
-  ${PROGRAM} <from> <to>
-  ${PROGRAM} -h | --help
-  ${PROGRAM} --version
-
-Options:
-  -h --help               Show this screen.
-  -V --version            Show version.
-
-Examples
-1. trains from RDG to PAD:
-${PROGRAM} RDG PAD
-`
-
-const {docopt} = require('docopt');
-
-// Can't use `arguments` here in strict mode or you get:
-// "SyntaxError: Unexpected eval or arguments in strict mode"
-// The names arguments and eval are special and forbidden as identifiers.
-let args = docopt(doc, {
-  version: `${VERSION} ${DATE} ${AUTHOR}`
-})
-
-const station = args['<from>']
-const dest = args['<to>']
-//const dest_name = args['<dest_name>']
-
-async function startFlow() {
+async function startFlow(station,dest) {
 	let payload = {
         station_code: station,
         dest_code: dest,
@@ -232,8 +202,48 @@ async function startFlow() {
 	return payload
 }
 
-startFlow()
+
+let main = function(){
+    // main code
+    const doc = `
+    ${PROGRAM}
+    ---------
+    Usage:
+      ${PROGRAM} <from> <to>
+      ${PROGRAM} -h | --help
+      ${PROGRAM} --version
+    
+    Options:
+      -h --help               Show this screen.
+      -V --version            Show version.
+    
+    Examples
+    1. trains from RDG to PAD:
+    ${PROGRAM} RDG PAD
+    `
+    
+    const {docopt} = require('docopt');
+    
+    // Can't use `arguments` here in strict mode or you get:
+    // "SyntaxError: Unexpected eval or arguments in strict mode"
+    // The names arguments and eval are special and forbidden as identifiers.
+    let args = docopt(doc, {
+      version: `${VERSION} ${DATE} ${AUTHOR}`
+    })
+    
+    const station = args['<from>']
+    const dest = args['<to>']
+    //const dest_name = args['<dest_name>']
+    
+    startFlow(station,dest)
 	.then(payload => {
         const output = formatTrains(payload)
         console.log(output)
 	})
+}
+    
+if (require.main === module) {
+    main();
+}
+
+module.exports = {getTrainsCallingAt,getAllTrainStops,formatTrains};
