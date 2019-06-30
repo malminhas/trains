@@ -14,7 +14,7 @@ $ npm install
 ```
 * **[transportapi.com](transportapi.com)**: You will need to signup with the service, create an app, obtain a API app Id plus corresponding key and store them in `.transportAppId` and `.transportAppKey` respectively.  See [here](https://developer.transportapi.com/) for more information on how to do this.
 
-trains.py
+[trains.py](trains.py)
 ---------
 Python version.
 ```
@@ -54,7 +54,7 @@ OXF 15:01 -> PAD 15:59 => STARTS HERE
 	Oxford,Reading,Slough,London Paddington
 ```
 
-trains.js
+[trains.js](trains.js)
 ---------
 `node.js` version built using promise flow where code is daisy-chained in consecutive `.then()` method calls on promises and a `payload` object progressively added to along the way.  This allows a faster response than in the Python case where all the calls are made in serial.  However, the responses aren't currently time-ordered.  It's possible to improve the promise flow so that all output is deferred to the end when `payload` has completed and can be sorted.  That is tackled in the async-await version of the code:
 ```
@@ -115,6 +115,15 @@ OXF 15:01 -> PAD 15:59 => STARTS HERE
 	Train C20808 (GW) from Oxford arriving at Oxford on platform 3 going to London Paddington platform 5. 4 stops:
 	Oxford,Reading,Slough,London Paddington
 ```
+
+[expressTrains.js](expressTrains.js)
+------------------
+
+```
+node expressTrains.js 
+Example app listening on port 8001
+```
+
 Implementation notes
 --------------------
 The command-line scripts [trains.py](trains.py), [trains.js](trains.js) and [trainsAsyncAwait.js](trainsAsyncAwait.js) share similar structure and use `docopt` for command line argument handling.  `requests` is used for invoking [transportapi.com](transportapi.com) from Python. `node-fetch` does the equivalent job in the `node.js` environment.   Multiple calls need to be made to [transportapi.com](transportapi.com) to generate the output.  A first call is made to get information about the trains in the next 2 hour window.  Further calls need to be made on each train to get information about where it is stopping.  The results are stitched together to form the output which is printed to the console.
