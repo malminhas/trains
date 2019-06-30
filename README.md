@@ -133,4 +133,4 @@ Implementation notes
 --------------------
 The command-line scripts [trains.py](trains.py), [trains.js](trains.js) and [trainsAsyncAwait.js](trainsAsyncAwait.js) share similar structure and use `docopt` for command line argument handling.  `requests` is used for invoking [transportapi.com](transportapi.com) from Python. `node-fetch` does the equivalent job in the `node.js` environment.   Multiple calls need to be made to [transportapi.com](transportapi.com) to generate the output.  A first call is made to get information about the trains in the next 2 hour window.  Further calls need to be made on each train to get information about where it is stopping.  The results are stitched together to form the output which is printed to the console.
 
-The [expressTrains.js](expressTrains.js) script creates a server on localhost:8001 using `express.js`. 
+The [expressTrains.js](expressTrains.js) script creates a server on localhost:8001 using `express.js`.  This implementation is suitable for Dockerisation.
