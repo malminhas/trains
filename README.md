@@ -1,6 +1,6 @@
 trains
 ======
-Command line tools for getting UK train times from A to B using the [transportapi.com](transportapi.com) digital platform for transport.  Inspired by [this codebase](https://github.com/chrishutchinson/train-departure-screen/blob/master/src/trains.py) developed for [this really cool Raspberry Pi-powered train board](https://twitter.com/chrishutchinson/status/1136743837244768257) built by Chris Hutchinson (@chrishutchinson) which also uses the same [transportapi.com](transportapi.com) API.  The purpose of the script is to allow me to use the command line to conveniently determine the times of the next few trains to and from my London station which happens to be Paddington.
+A variety of tools for getting UK train times from A to B using the [transportapi.com](transportapi.com) digital platform for transport.  Inspired by [this codebase](https://github.com/chrishutchinson/train-departure-screen/blob/master/src/trains.py) developed for [this really cool Raspberry Pi-powered train board](https://twitter.com/chrishutchinson/status/1136743837244768257) built by Chris Hutchinson (@chrishutchinson) which also uses the same [transportapi.com](transportapi.com) API.  The purpose of the script is to allow me to use the command line to conveniently determine the times of the next few trains to and from my London station which happens to be Paddington.
 
 Prerequisites
 -------------
@@ -8,7 +8,7 @@ Prerequisites
 ```
 (tr) $ pip install -r requirements.txt
 ```
-* **node.js**: You will need `npm` available on your system.  By default, `npm install` will install all modules listed as dependencies in `package.json`.
+* **node.js**: You will need `npm` available on your system.  By default, `npm install` will install all modules listed as dependencies in [`package.json`](package.json).
 ```
 $ npm install
 ```
@@ -22,7 +22,7 @@ $ python trains.py -h
    trains.py
    ---------
    Usage:
-   trains.py <from> <to> <dest_name>
+   trains.py <from> <to>
    trains.py -h | --help
    trains.py -V | --version
 
@@ -36,7 +36,7 @@ $ python trains.py -h
 ```
 Here's an example invocation for trains from Oxford to London Paddington:
 ```
-$ python trains.py OXF PAD "London Paddington"
+$ python trains.py OXF PAD
 ==============================================================================
 ==== Trains from Oxford (OXF) to London Paddington (PAD) 13:08 2019-06-25 ====
 ==============================================================================
@@ -56,13 +56,13 @@ OXF 15:01 -> PAD 15:59 => STARTS HERE
 
 trains.js
 ---------
-node.js version built using promise flow where code is daisy-chained in consecutive `.then()` method calls on promises and a `payload` object progressively added to along the way.  This allows a faster response than in the Python case where all the calls are made in serial.  However, the responses aren't currently time-ordered.  It's possible to improve the promise flow so that all output is deferred to the end when `payload` has completed and can be sorted.  That is tackled in the async-await version of the code:
+`node.js` version built using promise flow where code is daisy-chained in consecutive `.then()` method calls on promises and a `payload` object progressively added to along the way.  This allows a faster response than in the Python case where all the calls are made in serial.  However, the responses aren't currently time-ordered.  It's possible to improve the promise flow so that all output is deferred to the end when `payload` has completed and can be sorted.  That is tackled in the async-await version of the code:
 ```
 $ node trains.js -h
 trains.js
 ---------
 Usage:
-  trains.js <from> <to> <dest_name>
+  trains.js <from> <to>
   trains.js -h | --help
   trains.js --version
 
@@ -76,7 +76,7 @@ trains.js RDG PAD
 ```
 Here's the same invocation as above for trains from Oxford to London Paddington:
 ```
-$ node trains.js OXF PAD "London Paddington"
+$ node trains.js OXF PAD
 ==============================================================================
 ==== Trains from Oxford (OXF) to London Paddington (PAD) 13:06 2019-06-25 ====
 ==============================================================================
@@ -94,11 +94,11 @@ OXF 14:31 -> PAD 15:35 => NO REPORT
 	Oxford,Reading,Slough,London Paddington
 ```
 
-trainsAsyncAwait.js
+[trainsAsyncAwait.js](trainsAsyncAwait.js)
 -------------------
-node.js version built using async-await to make the code easier to follow in 'line by line' form.  Here's the same invocation as above for trains from Oxford to London Paddington this time with additional post-promise processing code to order the stations correctly:
+`node.js` version built using async-await to make the code easier to follow in 'line by line' form.  Here's the same invocation as above for trains from Oxford to London Paddington this time with additional post-promise processing code to order the stations correctly:
 ```
-$ node trainsAsyncAwait.js OXF PAD "London Paddington"
+$ node trainsAsyncAwait.js OXF PAD
 ==============================================================================
 ==== Trains from Oxford (OXF) to London Paddington (PAD) 13:07 2019-06-25 ====
 ==============================================================================
@@ -117,4 +117,10 @@ OXF 15:01 -> PAD 15:59 => STARTS HERE
 ```
 Implementation notes
 --------------------
-Both scripts share similar structure and use `docopt` for command line argument handling.  `requests` is used for invoking [transportapi.com](transportapi.com) from Python. `node-fetch` does the equivalent job in the node.js environment.   Multiple calls need to be made to [transportapi.com](transportapi.com) to generate the output.  A first call is made to get information about the trains in the next 2 hour window.  Further calls need to be made on each train to get information about where it is stopping.  The results are stitched together in the output.
+The command-line scripts [trains.py](trains.py), [trains.js](trains.js) and [trainsAsyncAwait.js](trainsAsyncAwait.js) share similar structure and use `docopt` for command line argument handling.  `requests` is used for invoking [transportapi.com](transportapi.com) from Python. `node-fetch` does the equivalent job in the `node.js` environment.   Multiple calls need to be made to [transportapi.com](transportapi.com) to generate the output.  A first call is made to get information about the trains in the next 2 hour window.  Further calls need to be made on each train to get information about where it is stopping.  The results are stitched together to form the output which is printed to the console.
+
+The [expressTrains.js](expressTrains.js) script creates a server listening on localhost port 8001 for input with the following query parameter format in a browser where `from` and `to` are specified as three letter codes:
+```
+http://localhost:8001/?from=PAD&to=TWY
+```
+This results in the same output as before being rendered in the browser window.
