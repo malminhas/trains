@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: express-trains
-        image: malminhas/express-trains:firsttry
+        image: malminhas/express-trains:secondtry
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8001
