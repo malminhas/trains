@@ -1,5 +1,5 @@
-# Command Line Scripts
-Walk through each of the command line scripts.
+# trains - command line tools
+Walk through each of the command line tools.
 
 ## [trains.py](trains.py)
 Python version.
