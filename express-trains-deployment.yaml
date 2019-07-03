@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: express-trains
+  name: express-trains
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: express-trains
+  template:
+    metadata:
+      labels:
+        app: express-trains
+    spec:
+      containers:
+      - name: express-trains
+        image: malminhas/express-trains:firsttry
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8001
+          protocol: TCP
