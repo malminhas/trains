@@ -31,7 +31,7 @@ See [here](Scripts.md) for more details on how to use each of the following tool
 * [`trainsAsyncAwait.js`](trainsAsyncAwait.js)
 * [`expressTrains.js`](expressTrains.js)
 
-## Running the web app
+## Running the web app locally
 The [`expressTrains.js`](expressTrains.js) tool can also be converted into a web app running in a container that can be exposed either locally via localhost or in a Kubernetes cluster.  In both cases, the container must be built with `docker` first.  In order to support this you will need the [docker-compose.yaml](docker-compose.yaml) file and underlying [Dockerfile](Dockerfile).  Assuming you have local copies of `.transportAppId` and `.transportAppKey` you can build a `docker` container called `express-trains` exposed on port 8001 as follows:
 ```
 $ docker-compose build
@@ -40,4 +40,10 @@ $ docker-compose up express-trains
 You should now be able to hit this container thus:
 ```
 $ curl "http://localhost:8001/?from=OXF&to=PAD"
+```
+## Running the web app in Kubernetes
+Both [deployment](express-trains-deployment.yaml) and [service](express-trains-service.yaml) YAML files have been provided that can be applied to a Kubernetes cluster to expose the service via an HTTP endpoint without directly involving an Ingress resource:
+```
+$ kubectl apply -f express-trains-deployment.yaml
+$ kubectl apply -f express-trains-service.yaml
 ```
