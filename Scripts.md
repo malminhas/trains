@@ -1,6 +1,7 @@
+# Command Line Scripts
+Walk through each of the command line scripts.
 
-[trains.py](trains.py)
-
+## [trains.py](trains.py)
 Python version.
 ```
 $ python trains.py -h 
