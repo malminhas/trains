@@ -1,7 +1,7 @@
 {
   "name": "transport",
   "version": "1.0.0",
-  "description": "Command line train times tool ",
+  "description": "Train times tools",
   "main": "trains.js",
   "dependencies": {
     "docopt": "^0.6.2",
