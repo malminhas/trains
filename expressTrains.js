@@ -35,6 +35,7 @@ const express = require('express')
 const trains = require('./trainsAsyncAwait')
 
 const DEFAULT_PORT = 8001
+const VERSION = 0.1
 
 async function startFlow(station,dest) {
     let payload = {
@@ -79,5 +80,5 @@ app.get('/', (req,res) => {
 })
 
 app.listen(port, ()=> {
-    console.log(`expressTrains.js listening on port ${port}`)
+    console.log(`expressTrains.js version ${VERSION} listening on port ${port}`)
 })
