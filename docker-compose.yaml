@@ -1,14 +1,13 @@
+# Note this is applied at run time to customize underlying image
+# Underlying image doesn't therefore contain these files!
 version: "2"
 services:
   express-trains:
     build: .
-    image: malminhas/express-trains:secondtry
+    image: malminhas/express-trains:composed
     ports:
-        - "8001:8001"
+        - 8001
     volumes:
-        - ./expressTrains.js:/usr/src/app/expressTrains.js
-        - ./trainsAsyncAwait.js:/usr/src/app/trainsAsyncAwait.js
-        - ./stationNames.js:/usr/src/app/stationNames.js
-        - ./station_codes.csv:/usr/src/app/station_codes.csv
-        - ./.transportAppId:/usr/src/app/.transportAppId
-        - ./.transportAppKey:/usr/src/app/.transportAppKey
+        - ./.transportAppId:/home/node/app/.transportAppId
+        - ./.transportAppKey:/home/node/app/.transportAppKey
+        - ./.README.md:/home/node/app/README.md

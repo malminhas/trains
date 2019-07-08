@@ -28,6 +28,7 @@ Version
 11.06.19  0.1   Initial version based on https://github.com/chrishutchinson/train-departure-screen/blob/master/src/trains.py
 12.06.19  0.2   Added docopt support
 30.06.19  0.2   Added input validation support and tweaked command line input to remove verbose destination station name
+08.07.19  0.2   Added support to handle secrets from environment variables
 */ 
 
 'use strict';
@@ -39,8 +40,8 @@ const fetch = require('node-fetch');
 const URL = require('url').URL;
 
 const PROGRAM = 'trainsAsyncAwait.js'
-const VERSION = '0.3'
-const DATE = '30.06.19'
+const VERSION = '0.4'
+const DATE = '08.07.19'
 const AUTHOR = 'Mal Minhas'
 
 const APP_ID = readCred('.transportAppId')
@@ -83,6 +84,7 @@ async function getTrainsCallingAt(payload) {
                     'type': 'departure'}
     Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
     const urlstring = url.toString()
+    //console.log(`url:${url}`)
     // line by line retrieve of response using await
     try {
         const response = await fetch(urlstring)
