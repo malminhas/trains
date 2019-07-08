@@ -37,7 +37,7 @@ See [here](Scripts.md) for more details on how to use each of the following util
 * [`trains.py`](trains.py) - command line interface
 * [`trains.js`](trains.js) - command line interface
 * [`trainsAsyncAwait.js`](trainsAsyncAwait.js) - command line interface
-* [`expressTrains.js`](expressTrains.js) - web app
+* [`expressTrains.js`](expressTrains.js) - web app HTTP interface
 
 ## Running the web app locally
 The [`expressTrains.js`](expressTrains.js) tool can also be converted into a web app running in a container that can be exposed either locally via localhost or in a Kubernetes cluster.  In both cases, the container must be built with `docker` first.  In order to support this you will need the [docker-compose.yaml](docker-compose.yaml) file and underlying [Dockerfile](Dockerfile).  Assuming you have local copies of `.transportAppId` and `.transportAppKey` you can build and test a `docker` container called `express-trains` exposed on port 8001 as follows:
