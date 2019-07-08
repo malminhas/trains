@@ -50,7 +50,7 @@ You should now be able to hit this container on this url in a local browser wind
 $ curl "http://localhost:8001/?from=OXF&to=PAD"
 ```
 ## Running the web app in Kubernetes
-[secret](express-trains-secret.yaml), [deployment](express-trains-deployment.yaml) and [service](express-trains-service.yaml) YAML files have been provided that can be applied to a Kubernetes cluster to expose the service via an HTTP endpoint without directly involving an Ingress resource.  The secret YAML is used to pass on [transportapi.com](transportapi.com) credentials as environment variables to avoid their inclusion in the docker image itself.  The deployment YAML houses all container handling logic and the service YAML setups up networking:
+[secret](express-trains-secret.yaml), [deployment](express-trains-deployment.yaml) and [service](express-trains-service.yaml) YAML files have been provided that can be applied to a Kubernetes cluster to expose the service via an HTTP endpoint without directly involving an Ingress resource.  The secret YAML template is used to pass on base64-encoded [transportapi.com](transportapi.com) credentials as environment variables to avoid their inclusion within the public docker image [which is available here](https://cloud.docker.com/u/malminhas/repository/docker/malminhas/express-trains/general).  The deployment YAML houses all container handling logic and the service YAML setups up networking exposing the service on port 80:
 ```
 $ kubectl apply -f express-trains-secret.yaml
 $ kubectl apply -f express-trains-deployment.yaml
