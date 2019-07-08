@@ -56,4 +56,4 @@ $ kubectl apply -f express-trains-secret.yaml
 $ kubectl apply -f express-trains-deployment.yaml
 $ kubectl apply -f express-trains-service.yaml
 ```
-You can find a lot more detail on the specifics of how to interact with a Kubernetes cluster using `kubectl` [in these comprehensive notes](KubernetesNotes.md).
+You can find a lot more detail on the specifics of how to interact with a Kubernetes cluster using `kubectl` [in these more comprehensive notes](KubernetesNotes.md).
