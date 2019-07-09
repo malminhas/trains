@@ -52,7 +52,21 @@ const APP_ID = readCred('.transportAppId')
 const APP_KEY = readCred('.transportAppKey')
 
 function readCred(fname) {
-    return fs.readFileSync(fname, 'utf8');
+    // First we check if corresponding environment variable exists.  If it does, use it.
+    const envvar = fname.substring(1).toUpperCase()
+    const value = process.env[envvar]
+    if (value){
+        //console.log(`Found and reading cred '${value}' from environment variable '${envvar}'`)
+        return value
+    }
+    // Second we check if there is a local file with cred in it.
+    if (fs.existsSync(fname)) {
+        const value = fs.readFileSync(fname, 'utf8')
+        //console.log(`Found and read cred '${value}' from file '${fname}'`)
+        return value
+    }
+    // Else we throw an error
+    throw Error(`Could not find any cred for ${fname}`)
 }
 
 function getTrainsCallingAt(station_code,station_name,dest_code,dest_name) {

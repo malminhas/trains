@@ -101,6 +101,7 @@ let main = function(){
 	// test an individual station
 	console.log(stations['PAD'])	
 	console.log(validateInputs('OXF','PAD'))
+	console.log('---- PASSED -----')
 }
 
 if (require.main === module) {
