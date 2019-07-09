@@ -26,24 +26,38 @@
 # -------
 # 10.06.19  0.1   Initial version based on https://github.com/chrishutchinson/train-departure-screen/blob/master/src/trains.py
 # 11.06.19  0.2   Added docopt support
+# 09.07.19  0.3   Updated to align with JavaScript versions (env variable support, incorporating station_codes.csv)
 # 
 
+import os
 import requests
+import stationNames
 
 PROGRAM = __file__
-VERSION = '0.2'
-DATE = '11.06.19'
+VERSION = '0.3'
+DATE = '09.07.19'
 AUTHOR= 'Mal Minhas'
 
 def readCred(fname):
-    with open(fname,'r') as f:
-        return f.read()
-    raise f'Issue finding cred from {f}'
+    # First we check if corresponding environment variable exists.  If it does, use it.
+    envvar = fname[1:].upper()
+    value = os.environ.get(envvar)
+    if value:
+        #print(f'Found and reading cred "{value}" from environment variable "{envvar}"')
+        return value
+    # Second we check if there is a local file with cred in it.
+    if os.path.exists(fname):    
+        with open(fname,'r',encoding='utf-8') as f:
+            value = f.read()
+            #print(f'Found and read cred "{value}" from file "{fname}"')
+            return value
+    # Else we throw an error 
+    raise f'Could not find any cred for {fname}'
 
 APP_ID = readCred('.transportAppId')
 APP_KEY = readCred('.transportAppKey')
 
-def getTrainsCallingAt(station_code,dest_code,dest_name,verbose=False):
+def getTrainsCallingAt(station_code,station_name,dest_code,dest_name,verbose=False):
     # station_code is 3 letter string.  eg. 'TWY','PADD'
     # from_offset is one hour in past by default
     # to_offset is two hours into future by default
@@ -139,7 +153,7 @@ if __name__ == '__main__':
     {}
     ---------
     Usage:
-    {} <from> <to> <dest_name> [-v]
+    {} <from> <to> [-v]
     {} -h | --help
     {} -V | --version
 
@@ -166,9 +180,9 @@ if __name__ == '__main__':
     elif arguments.get("--help") or arguments.get("-h"):
         print(usage)
     else:
-        source = arguments.get('<from>')
-        dest = arguments.get('<to>')
-        dest_name = arguments.get('<dest_name>')
-        assert(len(source) == 3 and len(dest) == 3)
-        trains = getTrainsCallingAt(source,dest,dest_name,verbose)     # OK
+        stationCode = arguments.get('<from>')
+        destCode = arguments.get('<to>')
+        # validate inputs - will throw error if there is a problem
+        stationName,destName = stationNames.validateInputs(stationCode,destCode)
+        trains = getTrainsCallingAt(stationCode,stationName,destCode,destName,verbose)     # OK
         formatTrains(trains,verbose)
