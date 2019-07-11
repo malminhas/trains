@@ -33,16 +33,16 @@ Version
 
 'use strict';
 
+const PROGRAM = 'trainsAsyncAwait.js'
+const VERSION = '0.4'
+const DATE = '08.07.19'
+const AUTHOR = 'Mal Minhas'
+
 const stationNames = require('./stationNames')
 const fs = require('fs')
 const fetch = require('node-fetch');
 // See: https://stackoverflow.com/questions/52566578/url-is-not-defined-in-node-js
 const URL = require('url').URL;
-
-const PROGRAM = 'trainsAsyncAwait.js'
-const VERSION = '0.4'
-const DATE = '08.07.19'
-const AUTHOR = 'Mal Minhas'
 
 const APP_ID = readCred('.transportAppId')
 const APP_KEY = readCred('.transportAppKey')
@@ -219,7 +219,7 @@ async function startFlow(station,dest) {
 }
 
 
-let main = function(){
+let cli = function(){
     // main code
     const doc = `
     ${PROGRAM}
@@ -259,7 +259,7 @@ let main = function(){
 }
     
 if (require.main === module) {
-    main();
+    cli();
 }
 
-module.exports = {getTrainsCallingAt,getAllTrainStops,formatTrains};
+module.exports = {cli,getTrainsCallingAt,getAllTrainStops,formatTrains};
