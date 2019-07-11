@@ -1,0 +1,61 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package trains;
+
+// Request message
+message TrainRequest {
+  string from = 1;
+  string to = 2;
+}
+
+// Response message
+message TrainResponse {
+
+  message TrainStop {
+    string station_code = 1;
+    string station_name = 2;
+    int32 platform = 3;
+    string expected_arrival = 4;
+    //google.protobuf.Timestamp expected_arrival;
+  }
+
+  message TrainDeparture {
+    string mode = 1;
+    string service = 2;
+    string train_uid = 3;
+    int32 platform = 4;
+    string operator = 5;
+    string operator_name = 6;
+    //string aimed_departure_time;
+    //string aimed_arrival_time;
+    //string aimed_pass_time;
+    string origin_name = 7;
+    string destination_name = 8;
+    string source = 9;
+    //string category;
+    //service_timetable: [Object],
+    string status = 10;
+    string expected_arrival_time = 11;
+    string expected_departure_time = 12;
+    //string best_arrival_estimate_mins
+    //string best_departure_estimate_mins
+    TrainStop stops = 13;
+    //google.protobuf.Timestamp expected_arrival = 1;
+    //google.protobuf.Timestamp expected_departure = 2;  
+  }
+
+  string station_code = 1;
+  string dest_code = 2;
+  string date = 3;
+  string time_of_day = 4;
+  repeated TrainDeparture departures = 5;
+  string station_name = 6;
+  string dest_name = 7;
+}
+
+// Service definition
+service TrainService {
+  rpc GetTrains (TrainRequest) returns (TrainResponse);
+}
