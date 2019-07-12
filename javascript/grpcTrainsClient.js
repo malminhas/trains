@@ -34,7 +34,7 @@ const VERSION = '0.4'
 const DATE = '08.07.19'
 const AUTHOR = 'Mal Minhas'
 
-const PROTO_PATH = __dirname + '/trains.proto'
+const PROTO_PATH = __dirname + './../trains.proto'
 const SERVER_PORT = 8001
 
 const fs = require('fs');

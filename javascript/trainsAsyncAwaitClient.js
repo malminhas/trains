@@ -175,13 +175,18 @@ function formatTrains(payload){
         let dest = stops.filter(stop => stop.station_code === payload.dest_code)[0]
         let route = stops.filter(stop => stop.on_route === true)
     
-        let departure = `${payload.station_code} ${train.expected_departure_time} -> ${payload.dest_code}`
+        let deptime = train.expected_departure_time
+        if (deptime === null){
+            deptime = train.aimed_departure_time
+        }
+        let departure = `${payload.station_code} ${deptime} -> ${payload.dest_code}`
         departure += ` ${dest.expected_arrival_time} => ${train.status}\n`
         departure += `\tTrain ${train.train_uid} (${train.operator}) from ${train.origin_name}`
         departure += ` arriving at ${payload.station_name} on platform ${source.platform}`
         departure += ` going to ${payload.dest_name} platform ${dest.platform}. ${route.length} stops:`
-        trains.push({'time':train.expected_departure_time,'departure':departure,'stops': stops})
+        trains.push({'time':deptime,'departure':departure,'stops': stops})
     })
+    //console.log(trains)
     // Now we need to sort the trains in order of time
     trains.sort((a, b) => a.time.localeCompare(b.time));
 

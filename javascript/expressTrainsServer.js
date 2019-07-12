@@ -32,7 +32,7 @@ Version
 
 'use strict';
 const express = require('express')
-const trains = require('./trainsAsyncAwait')
+const trains = require('./trainsAsyncAwaitClient')
 
 const DEFAULT_PORT = 8001
 const VERSION = 0.1

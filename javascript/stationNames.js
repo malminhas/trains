@@ -27,7 +27,7 @@ Version
 
 'use strict'
 const fs = require('fs')
-
+const STATION_NAMES_CSV = 'station_codes.csv'
 
 function csvToJSONArray(csvFile){
 	// read csvFile content into csv string
@@ -80,7 +80,7 @@ function validateInputs(station_code,dest_code){
         console.log(`Invalid input parameter length for dest_code`)
         throw new Error(error);
     }
-    const csvFile = 'station_codes.csv'
+    const csvFile = STATION_NAMES_CSV
     const stations = csvToJSONMap(csvFile)
     if (!stations[station_code]){
         console.log(`Invalid station_code`)
@@ -95,7 +95,7 @@ function validateInputs(station_code,dest_code){
 
 let main = function(){
 	// main code
-	const csv = 'station_codes.csv'
+	const csv = STATION_NAMES_CSV
 	const stations = csvToJSONMap(csv)
 	console.log(convertToString(stations))
 	// test an individual station

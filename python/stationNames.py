@@ -30,6 +30,8 @@
 import json
 import pandas as pd
 
+STATION_NAMES_CSV = './../station_codes.csv'
+
 def csvToJSONArray(csvFile):
 	# read csvFile content into csv string
 	df = pd.read_csv(csvFile)
@@ -56,7 +58,7 @@ def validateInputs(station_code,dest_code):
     if not dest_code or len(dest_code) != 3:
         print('Invalid input parameter length for dest_code')
         raise error
-    csvFile = 'station_codes.csv'
+    csvFile = STATION_NAMES_CSV
     stations = csvToJSONMap(csvFile)
     if not stations[station_code]:
         print('Invalid station_code')
@@ -67,7 +69,7 @@ def validateInputs(station_code,dest_code):
     return stations[station_code], stations[dest_code]
 
 if __name__ == '__main__':
-	csv = 'station_codes.csv'
+	csv = STATION_NAMES_CSV
 	stations = csvToJSONMap(csv)
 	print(convertToString(stations))
 	# test an individual station

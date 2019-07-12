@@ -112,8 +112,11 @@ def formatHeader(d):
 def formatDeparture(train,stops,d):
     source = [stop for stop in stops if stop.get('station_code') == d.get('station_code')][0]
     dest = [stop for stop in stops if stop.get('station_code') == d.get('destination_code')][0]
-    route = [stop.get('station_name') for stop in stops if stop.get('on_route')]
-    departure = f"{d.get('station_code')} {train.get('expected_departure_time')} -> {d.get('destination_code')}"
+    route = [stop.get('station_name') for stop in stops if stop.get('on_route')]    
+    deptime = train.get('expected_departure_time')
+    if not deptime:
+        deptime = train.get('aimed_departure_time')
+    departure = f"{d.get('station_code')} {deptime} -> {d.get('destination_code')}"
     departure += f" {dest.get('expected_arrival_time')} => {train.get('status')}\n"
     departure += f"\tTrain {train.get('train_uid')} ({train.get('operator')}) from {train.get('origin_name')}"
     departure += f" arriving at {d.get('station_name')} on platform {source.get('platform')}"

@@ -29,12 +29,12 @@ Version
 */ 
 
 'use strict';
-const PROTO_PATH = __dirname + '/trains.proto'
+const PROTO_PATH = __dirname + './../trains.proto'
 const SERVER_PORT = 8001
 const VERSION = '0.1'
 
 const fs = require('fs');
-const trains = require('./trainsAsyncAwait')
+const trains = require('./trainsAsyncAwaitClient')
 const grpc = require('grpc');
 const protoLoader = require('@grpc/proto-loader');
 const packageDefinition = protoLoader.loadSync(
