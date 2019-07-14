@@ -27,14 +27,15 @@ $ go get google.golang.org/grpc                                               # 
 $ go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway    # install grpc-gateway
 $ go get -u github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger         # install swagger support
 $ go get -u github.com/golang/protobuf/protoc-gen-go                          # install go proto plugin
-$ export PATH=$PATH:$GOPATH/bin
-$ protoc -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway 
+$ export PATH=$PATH:$GOPATH/bin                                               # ensure proto-gen-swagger CLI is accessible
+$ protoc 
 -I. 
 -I$GOPATH/src 
+-I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway 
 -I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis 
 --plugin=protoc-gen-grpc-gateway=$GOPATH/bin/protoc-gen-grpc-gateway 
 --swagger_out=logtostderr=true:. 
-trains.proto
+trains.proto                                                                  # generate trains.swagger.json output
 ```
 This will generate the [`trains.swagger.json`](trains.swagger.json) file.  You can now view that using swagger-ui as follows:
 ```
