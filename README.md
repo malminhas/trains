@@ -34,9 +34,10 @@ Server Version: version.Info{Major:"1", Minor:"14", GitVersion:"v1.14.1", GitCom
 
 ## Running the command line tools
 See [here](Scripts.md) for more details on how to use each of the following client-side utilities from the command line:
-* [`trainsClient.py`](python/trains.py) - command line interface
-* [`trainsClient.js`](javascript/trains.js) - command line interface
-* [`trainsAsyncAwaitClient.js`](javascript/trainsAsyncAwait.js) - command line interface
+* [`trainsClient.py`](python/trainsClient.py) - command line interface
+https://github.com/malminhas/trains/blob/master/python/trainsClient.py
+* [`trainsClient.js`](javascript/trainsClient.js) - command line interface
+* [`trainsAsyncAwaitClient.js`](javascript/trainsAsyncAwaitClient.js) - command line interface
 
 ## Running the web app locally
 See [here](Scripts.md) for more details on how to invoke each of the following server-side utilities:
