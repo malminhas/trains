@@ -1,11 +1,11 @@
 # trains
-A collection of utilities for getting UK train times from A to B using the [transportapi.com](transportapi.com) digital platform for transport.  The original version was inspired by [this codebase](https://github.com/chrishutchinson/train-departure-screen/blob/master/src/trains.py) developed for [a really cool Raspberry Pi-powered train board](https://twitter.com/chrishutchinson/status/1136743837244768257) built by Chris Hutchinson (@chrishutchinson) which also uses the same [transportapi.com](transportapi.com) API.  During their development, these utilities have been adapted to support a range of development and deployment paradigms from a simple command line interface that can be invoked in a terminal right the way to a web app which can be run either in a standalone Docker container or a pod in a Kubernetes cluster.  The reason for so doing was to help learn about these different approaches using a practical example.
+A collection of utilities for getting UK train times from A to B using the [transportapi.com](transportapi.com) digital platform for transport.  The initial inspiration was [this codebase](https://github.com/chrishutchinson/train-departure-screen/blob/master/src/trains.py) developed for [a really cool Raspberry Pi-powered train board](https://twitter.com/chrishutchinson/status/1136743837244768257) built by Chris Hutchinson (@chrishutchinson) which also uses the [transportapi.com](transportapi.com) API.  During development, these utilities have been adapted to support a range of development and deployment paradigms from a simple command line interface that can be invoked in a terminal to a web app which can be run either in a standalone Docker container or in a pod in a Kubernetes cluster.  The reason for so doing was to learn about these different approaches using a practical example.
 
 The ultimate purpose of the utilities nevertheless remains the same.  Namely to allow users an interface to conveniently determine the times of the next few trains to and from different train stations.  Train stations must be supplied in [standard three letter CRS codes](http://www.railwaycodes.org.uk/crs/CRS0.shtm).  For example `OXF`=Oxford and `PAD`=London Paddington. Here is an example of how one of the command line variants works.  The first three-letter station code represents the origin and the second the destination:
 ```
-$ node trainsAsyncAwait.js OXF PAD
+$ node trainsClient.js OXF PAD
 ```
-In the web app variant, these stations are passed in as query parameters.  In this case, `node expressTrains.js` has been invoked from the terminal to enable the web app to run locally on default port 8001:
+In the web app variant, these stations are passed in as query parameters.  In this case, `node expressTrainsServer.js` has been invoked from the terminal to enable the web app to run locally on default port 8001:
 ```
 http://localhost:8001/?from=OXF&to=PAD
 ```
@@ -33,14 +33,17 @@ Server Version: version.Info{Major:"1", Minor:"14", GitVersion:"v1.14.1", GitCom
 ```
 
 ## Running the command line tools
-See [here](Scripts.md) for more details on how to use each of the following utilities from the command line:
-* [`trains.py`](trains.py) - command line interface
-* [`trains.js`](trains.js) - command line interface
-* [`trainsAsyncAwait.js`](trainsAsyncAwait.js) - command line interface
-* [`expressTrains.js`](expressTrains.js) - web app HTTP interface
+See [here](Scripts.md) for more details on how to use each of the following client-side utilities from the command line:
+* [`trainsClient.py`](python/trains.py) - command line interface
+* [`trainsClient.js`](javascript/trains.js) - command line interface
+* [`trainsAsyncAwaitClient.js`](javascript/trainsAsyncAwait.js) - command line interface
 
 ## Running the web app locally
-The [`expressTrains.js`](expressTrains.js) tool can also be converted into a web app running in a container that can be exposed either locally via localhost or in a Kubernetes cluster.  In both cases, the container must be built with `docker` first.  In order to support this you will need the [docker-compose.yaml](docker-compose.yaml) file and underlying [Dockerfile](Dockerfile).  Assuming you have local copies of `.transportAppId` and `.transportAppKey` you can build and test a `docker` container called `express-trains` exposed on port 8001 as follows:
+See [here](Scripts.md) for more details on how to invoke each of the following server-side utilities:
+* [`expressTrainsServer.js`](javascript/expressTrainsServer.js) - web app HTTP server invoked from command line with `curl`.
+* [`grpcTrainsServer.js`](javascript/grpcTrainsServer.js) - gRPC server invoked from command line using corresponding [`grpcTrainsClient.js`](javascript/grpcTrainsClient.js).
+
+[`expressTrainsServer.js`](javascript/expressTrainsServer.js) can be converted into a web app running in a container that can be exposed either locally via localhost or in a Kubernetes cluster.  In both cases, the container must be built with `docker` first.  In order to support this you will need the [docker-compose.yaml](javascript/docker-compose.yaml) file and underlying [Dockerfile](javascript/Dockerfile).  Assuming you have local copies of `.transportAppId` and `.transportAppKey` you can build and test a `docker` container called `express-trains` exposed on port 8001 as follows from within the `javascript` directory:
 ```
 $ docker-compose build
 $ docker-compose up express-trains
@@ -50,7 +53,7 @@ You should now be able to hit this container on this url in a local browser wind
 $ curl "http://localhost:8001/?from=OXF&to=PAD"
 ```
 ## Running the web app in Kubernetes
-[secret](express-trains-secret.yaml), [deployment](express-trains-deployment.yaml) and [service](express-trains-service.yaml) YAML files have been provided that can be applied to a Kubernetes cluster to expose the service via an HTTP endpoint without directly involving an Ingress resource.  The secret YAML template is used to pass on base64-encoded [transportapi.com](transportapi.com) credentials as environment variables to avoid their inclusion within the public docker image [which is available here](https://cloud.docker.com/u/malminhas/repository/docker/malminhas/express-trains/general).  The deployment YAML houses all container handling logic and the service YAML setups up networking exposing the service on port 80:
+[secret](kubernetes/express-trains-secret.yaml), [deployment](kubernetes/express-trains-deployment.yaml) and [service](kubernetes/express-trains-service.yaml) YAML files have been provided that can be applied to a Kubernetes cluster to expose the service via an HTTP endpoint without directly involving an Ingress resource.  The secret YAML template is used to pass on base64-encoded [transportapi.com](transportapi.com) credentials as environment variables to avoid their inclusion within the public docker image [which is available here](https://cloud.docker.com/u/malminhas/repository/docker/malminhas/express-trains/general).  The deployment YAML houses all container handling logic and the service YAML setups up networking exposing the service on port 80.  Invoke these scripts as follows from within the `kubernetes` directory:
 ```
 $ kubectl apply -f express-trains-secret.yaml
 $ kubectl apply -f express-trains-deployment.yaml
