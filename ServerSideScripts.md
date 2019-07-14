@@ -41,6 +41,8 @@ This will generate the [`trains.swagger.json`](trains.swagger.json) file.  You c
 ```
 $ docker run -p 80:8080 -e SWAGGER_JSON=/trains/trains.swagger.json -v $PWD:/trains swaggerapi/swagger-ui
 ```
+You should see this output in the browser on navigating to localhost:
+![trains swagger documentation](trainsSwaggerUI.png)
 
 ## Implementation notes
 The [expressTrainsServer.js](javascript/expressTrainsServer.js) script creates a server on localhost:8001 using `express.js`.  The [grpcTrainsServer.js](javascript/grpcTrainsServer.js) script provides a gRPC implementation of the service built on the [trains.proto](trains.proto) file which instantiates a [protocol buffer](https://developers.google.com/protocol-buffers/docs/proto) based definition of the interface between client and server. Both implementations are suitable for Dockerisation though [the example provided](javascript/Dockerfile) in this repository is for [expressTrainsServer.js](javascript/expressTrainsServer.js).
