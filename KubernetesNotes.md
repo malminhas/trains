@@ -13,9 +13,11 @@ COPY package*.json ./
 # 3. Bundle app source into docker image.  
 # Avoid mounting host directories within containers.
 #COPY . .
-# NOTE: Here we are copying API creds over which is NOT
-COPY --chown=node:node expressTrains.js .
-COPY --chown=node:node trainsAsyncAwait.js .
+# NOTE: Here we are NOT copying API creds over.  They are handled separately
+# NOTE also that you can only copy files in docker context
+# https://www.jamestharpe.com/include-files-outside-docker-build-context/
+COPY --chown=node:node expressTrainsServer.js .
+COPY --chown=node:node trainsAsyncAwaitClient.js .
 COPY --chown=node:node stationNames.js .
 COPY --chown=node:node station_codes.csv .
 # 4. expressTrains binds to port 8001 so use the EXPOSE instruction to have it 
@@ -25,13 +27,13 @@ EXPOSE 8001
 # https://github.com/nodejs/docker-node/issues/740
 USER node
 # 6. Install package and its dependencies using either package.json if present 
-# or package-lock.json.  Note that an updated package.json can trump package-lock.json 
-# whenever a newer version is found for a dependency in package.json. 
-# If you are building your code for production
+# or package-lock.json.  Note that an updated package.json 
+# can trump package-lock.json whenever a newer version is found for a 
+# dependency in package.json. If you are building your code for production
 # RUN npm ci --only=production
 RUN npm install
 # Define the command to run your app using CMD which defines your runtime
-CMD [ "node", "expressTrains.js" ]
+CMD [ "node", "expressTrainsServer.js" ]
 ```
 2. Create `docker-compose.yaml` which adds creds to the base docker image thus:
 ```
