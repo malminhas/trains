@@ -20,7 +20,7 @@ This results in the same simple text-based output being displayed as the command
 ## [grpcTrainsServer.js](javascript/grpcTrainsServer.js)
 `protobuf.js` based version which creates a [`node` gRPC server](https://grpc.io/docs/quickstart/node/) listening on localhost port 8001 for input conforming to the definition laid out in the [`trains.proto`](trains.proto) file.  With this approach `node` dynamically generates service descriptors and client stub definitions from the [`trains.proto`](trains.proto) file at runtime. A corresponding client needs to process the response according to the same definitiion.  An example client implementation, [grpcTrainsClient.js](javascript/grpcTrainsClient.js) is provided which leverages the same dynamic support to invoke the API.
 
-<note on documentation here>
+<i>note on documentation here</i>
 
 ## Implementation notes
 The [expressTrainsServer.js](javascript/expressTrainsServer.js) script creates a server on localhost:8001 using `express.js`.  The [grpcTrainsServer.js](javascript/grpcTrainsServer.js) script provides a gRPC implementation of the service built on the [trains.proto](trains.proto) file which instantiates a [protocol buffer](https://developers.google.com/protocol-buffers/docs/proto) based definition of the interface between client and server. Both implementations are suitable for Dockerisation though [the example provided](javascript/Dockerfile) in this repository is for [expressTrainsServer.js](javascript/expressTrainsServer.js).
