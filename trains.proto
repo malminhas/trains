@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-import "google/protobuf/timestamp.proto";
+// Note these are relative to $GOPATH/src/github.com/grpc-ecosystem/grpc-gateway
+import "third_party/googleapis/google/api/annotations.proto";
+import "protoc-gen-swagger/options/annotations.proto";
 
 package trains;
 
@@ -56,6 +58,27 @@ message TrainResponse {
 }
 
 // Service definition
+// https://github.com/grpc-ecosystem/grpc-gateway/issues/241
 service TrainService {
-  rpc GetTrains (TrainRequest) returns (TrainResponse);
+  rpc GetTrains (TrainRequest) returns (TrainResponse) {
+    option (google.api.http) = {
+      get: "/*"
+    };  
+  }
 }
+
+option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+  info: {
+  title: "trains";
+  version: "1.0";
+  contact: {
+  name: "trains";
+  url: "https://github.com/malminhas/trains";
+  email: "mal@malm.co.uk";
+  };
+};
+schemes: HTTP;
+schemes: HTTPS;
+consumes: "application/json";
+produces: "application/json";
+};
