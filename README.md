@@ -32,13 +32,13 @@ Client Version: version.Info{Major:"1", Minor:"15", GitVersion:"v1.15.0", GitCom
 Server Version: version.Info{Major:"1", Minor:"14", GitVersion:"v1.14.1", GitCommit:"b7394102d6ef778017f2ca4046abbaa23b88c290", GitTreeState:"clean", BuildDate:"2019-04-08T17:02:58Z", GoVersion:"go1.12.1", Compiler:"gc", Platform:"linux/amd64"}
 ```
 
-## Running the command line tools
+## Running the client side command line tools
 See [here](CommandLineScripts.md) for more details on how to use each of the following client-side utilities from the command line:
 * [`trainsClient.py`](python/trainsClient.py) - Python command line interface
 * [`trainsClient.js`](javascript/trainsClient.js) - Javascript command line interface using promises
 * [`trainsAsyncAwaitClient.js`](javascript/trainsAsyncAwaitClient.js) - Javascript command line interface using async/await
 
-## Running the web app locally
+## Running the server side tools locally
 See [here](ServerSideScripts.md) for more details on how to invoke and interface with each of the following server-side utilities:
 * [`expressTrainsServer.js`](javascript/expressTrainsServer.js) - Javascript web app HTTP server invoked from command line with `curl` which uses [`trainsAsyncAwaitClient.js`](javascript/trainsAsyncAwaitClient.js) under the hood.
 * [`grpcTrainsServer.js`](javascript/grpcTrainsServer.js) - Javascript gRPC server built using [`trainsAsyncAwaitClient.js`](javascript/trainsAsyncAwaitClient.js) under the hood and invoked from command line using corresponding [`grpcTrainsClient.js`](javascript/grpcTrainsClient.js).
@@ -52,8 +52,8 @@ You should now be able to hit this container on this url in a local browser wind
 ```
 $ curl "http://localhost:8001/?from=OXF&to=PAD"
 ```
-## Running the web app in Kubernetes
-[secret](kubernetes/express-trains-secret.yaml), [deployment](kubernetes/express-trains-deployment.yaml) and [service](kubernetes/express-trains-service.yaml) YAML files have been provided that can be applied to a Kubernetes cluster to expose the service via an HTTP endpoint without directly involving an Ingress resource.  The secret YAML template is used to pass on base64-encoded [transportapi.com](transportapi.com) credentials as environment variables to avoid their inclusion within the public docker image [which is available here](https://cloud.docker.com/u/malminhas/repository/docker/malminhas/express-trains/general).  The deployment YAML houses all container handling logic and the service YAML setups up networking exposing the service on port 80.  Invoke these scripts as follows from within the `kubernetes` directory:
+## Running the server side tools in Kubernetes
+[secret](kubernetes/express-trains-secret.yaml), [deployment](kubernetes/express-trains-deployment.yaml) and [service](kubernetes/express-trains-service.yaml) YAML files have been provided that can be applied to a Kubernetes cluster to expose the [`expressTrainsServer.js`](javascript/expressTrainsServer.js) service built into a docker container via an HTTP endpoint without directly involving an Ingress resource.  The secret YAML template is used to pass on base64-encoded [transportapi.com](transportapi.com) credentials as environment variables to avoid their inclusion within the public docker image [which is available here](https://cloud.docker.com/u/malminhas/repository/docker/malminhas/express-trains/general).  The deployment YAML houses all container handling logic and the service YAML setups up networking exposing the service on port 80.  Invoke these scripts as follows from within the `kubernetes` directory:
 ```
 $ kubectl apply -f express-trains-secret.yaml
 $ kubectl apply -f express-trains-deployment.yaml
