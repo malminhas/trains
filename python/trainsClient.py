@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # -*- coding: future_fstrings -*-
 #
-# trains.py
+# trainsClient.py
 # (c) 2019 Mal Minhas, <mal@malm.co.uk>
 #
 # Licence
@@ -154,7 +154,7 @@ if __name__ == '__main__':
 
     usage = """
     {}
-    ---------
+    ---------------
     Usage:
     {} <from> <to> [-v]
     {} -h | --help

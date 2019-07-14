@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- trainsAsyncAwait.js
+ trainsAsyncAwaitClient.js
 (c) 2019 Mal Minhas, <mal@malm.co.uk>
 
 Licence
@@ -33,7 +33,7 @@ Version
 
 'use strict';
 
-const PROGRAM = 'trainsAsyncAwait.js'
+const PROGRAM = 'trainsAsyncAwaitClient.js'
 const VERSION = '0.4'
 const DATE = '08.07.19'
 const AUTHOR = 'Mal Minhas'
@@ -227,21 +227,21 @@ async function startFlow(station,dest) {
 let cli = function(){
     // main code
     const doc = `
-    ${PROGRAM}
-    ---------
-    Usage:
-      ${PROGRAM} <from> <to>
-      ${PROGRAM} -h | --help
-      ${PROGRAM} --version
+${PROGRAM}
+-------------------------
+Usage:
+    ${PROGRAM} <from> <to>
+    ${PROGRAM} -h | --help
+    ${PROGRAM} --version
     
-    Options:
-      -h --help               Show this screen.
-      -V --version            Show version.
+Options:
+    -h --help               Show this screen.
+    -V --version            Show version.
     
-    Examples
+Examples
     1. trains from RDG to PAD:
     ${PROGRAM} RDG PAD
-    `
+`
     
     const {docopt} = require('docopt');
     

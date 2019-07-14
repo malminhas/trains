@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- expressTrains.js
+ expressTrainsServer.js
 (c) 2019 Mal Minhas, <mal@malm.co.uk>
 
 Licence
@@ -36,6 +36,7 @@ const trains = require('./trainsAsyncAwaitClient')
 
 const DEFAULT_PORT = 8001
 const VERSION = 0.1
+const PROGRAM = 'expressTrainsServer.js'
 
 async function startFlow(station,dest) {
     let payload = {
@@ -80,5 +81,5 @@ app.get('/', (req,res) => {
 })
 
 app.listen(port, ()=> {
-    console.log(`expressTrains.js version ${VERSION} listening on port ${port}`)
+    console.log(`${PROGRAM} version ${VERSION} listening on port ${port}`)
 })

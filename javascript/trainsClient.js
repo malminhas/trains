@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- trains.js
+ trainsClient.js
 (c) 2019 Mal Minhas, <mal@malm.co.uk>
 
 Licence
@@ -43,7 +43,7 @@ const fetch = require('node-fetch');
 // See: https://stackoverflow.com/questions/52566578/url-is-not-defined-in-node-js
 const URL = require('url').URL;
 
-const PROGRAM = 'trains.js'
+const PROGRAM = 'trainsClient.js'
 const VERSION = '0.3'
 const DATE = '30.06.19'
 const AUTHOR = 'Mal Minhas'
@@ -188,7 +188,7 @@ function printTrainDetails(trainDetails,stops){
 
 const doc = `
 ${PROGRAM}
----------
+---------------
 Usage:
   ${PROGRAM} <from> <to>
   ${PROGRAM} -h | --help

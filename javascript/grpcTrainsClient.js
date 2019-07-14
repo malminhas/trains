@@ -60,22 +60,21 @@ function dumpObject(obj) {
 let main = function(){
     // main code
     const doc = `
-    ${PROGRAM}
-    ---------
-    Usage:
-      ${PROGRAM} <from> <to>
-      ${PROGRAM} -h | --help
-      ${PROGRAM} --version
+${PROGRAM}
+-------------------
+Usage:
+  ${PROGRAM} <from> <to>
+  ${PROGRAM} -h | --help
+  ${PROGRAM} --version
+
+Options:
+  -h --help               Show this screen.
+  -V --version            Show version.
     
-    Options:
-      -h --help               Show this screen.
-      -V --version            Show version.
-    
-    Examples
-    1. trains from RDG to PAD:
-    ${PROGRAM} RDG PAD
-	`
-	
+Examples
+  1. trains from RDG to PAD:
+  ${PROGRAM} RDG PAD
+`
     const {docopt} = require('docopt');
     
     // Can't use `arguments` here in strict mode
