@@ -1,4 +1,4 @@
-// trains.go
+// trainsClient.go
 //
 // Installation:
 // ------------
