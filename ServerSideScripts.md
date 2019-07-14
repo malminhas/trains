@@ -37,7 +37,7 @@ $ protoc
 --swagger_out=logtostderr=true:. 
 trains.proto                                                                  # generate trains.swagger.json output
 ```
-This will generate the [`trains.swagger.json`](trains.swagger.json) file.  You can now view that using swagger-ui by using a pre-built docker container as follows:
+This will generate the [`trains.swagger.json`](trains.swagger.json) file.  You can now view that using `swagger-ui` by using a pre-built `swagger-ui` docker container as follows:
 ```
 $ docker run -p 80:8080 -e SWAGGER_JSON=/trains/trains.swagger.json -v $PWD:/trains swaggerapi/swagger-ui
 ```
