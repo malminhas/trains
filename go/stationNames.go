@@ -134,7 +134,7 @@ func validateInputs(station_code string, dest_code string) (string, string) {
 	return stationName, destName
 }
 
-func main() {
+func test() {
 	const csv = STATION_NAMES_CSV // const is number, string or boolean only
 	stations := csvToJSONMap(csv)
 	fmt.Println(convertToString(stations))
