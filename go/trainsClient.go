@@ -24,17 +24,15 @@ func procOpts(opts *docopt.Opts) {
 	var conf struct {
 		StationCode     string `docopt:"<from>"`
 		DestinationCode string `docopt:"<to>"`
-		DestinationName string `docopt:"<dest_name>"`
 	}
 	opts.Bind(&conf)
 
 	station := conf.StationCode
 	dest := conf.DestinationCode
-	dest_name := conf.DestinationName
 
 	if len(station) > 0 && len(dest) > 0 && len(dest_name) > 0 {
 		start := time.Now()
-		fmt.Println(fmt.Sprintf("Source='%s',Destination='%s',DestinationName='%s'", station, dest, dest_name))
+		fmt.Println(fmt.Sprintf("Source='%s',Destination='%s'", station, dest))
 		t := time.Now()
 		elapsed := t.Sub(start)
 		fmt.Printf("========== FINISHED ===========\nElapsed time = %s", elapsed)
