@@ -35,7 +35,51 @@ type TrainStop struct {
 	StationName     string `json:"station_name"`
 	ExpectedArrival string `json:"expected_arrival_time"`
 	Platform        string `json:"platform"`
+	OnRoute         bool   `json:"on_route"`
 }
+
+type TrainStops struct {
+	Service  string      `json:"service"`
+	TrainUid string      `json:"train_uid"`
+	Stops    []TrainStop `json:"stops"`
+}
+
+/*
+{"service":"25516005",
+"train_uid":"C23362",
+"headcode":"",
+"toc":{"atoc_code":"GW"},
+"train_status":"P",
+"origin_name":"London Paddington",
+"destination_name":"Reading",
+"stop_of_interest":null,
+"date":"2019-07-16",
+"time_of_day":null,
+"mode":"train",
+"request_time":"2019-07-16T01:28:19+01:00",
+"category":"OO",
+"operator":"GW",
+"operator_name":"Great Western Railway",
+"stops":[{
+	"station_code":"PAD",
+	"tiploc_code":"PADTON",
+	"station_name":"London Paddington",
+	"stop_type":"LO",
+	"platform":"14",
+	"aimed_departure_date":"2019-07-16",
+	"aimed_departure_time":"01:34",
+	"aimed_arrival_date":null,
+	"aimed_arrival_time":null,
+	"aimed_pass_date":null,
+	"aimed_pass_time":null,
+	"expected_departure_date":"2019-07-16",
+	"expected_departure_time":"01:34",
+	"expected_arrival_date":null,
+	"expected_arrival_time":null,
+	"expected_pass_date":null,
+	"expected_pass_time":null,
+	"status":"STARTS HERE"}, ...]
+*/
 
 type TrainTimetable struct {
 	Url string `json:"id"`
@@ -155,18 +199,14 @@ func getTrainsCallingAt(station_code string, station_name string, dest_code stri
 	// You can modify the request by passing an optional RequestOptions struct
 	resp, err := grequests.Get(url, &grequests.RequestOptions{Params: params})
 	if err != nil {
-		log.Fatalln("Unable to make request: ", err)
+		log.Fatalln("Unable to make journey request: ", err)
 	}
-
-	//if err := resp.JSON(TrainStruct); err != nil {
-	//	t.Error("Cannot serialize cookie JSON: ", err)
-	//}
 	respStr := resp.String()
 	journey := &TrainJourney{}
 	if err := resp.JSON(journey); err != nil {
 		log.Fatal("Cannot serialize JSON: ", err)
 	}
-	// Fill in these values
+	// Fill in these two values
 	journey.DestinationName = dest_name
 	journey.DestinationCode = dest_code
 	if verbose {
@@ -179,38 +219,44 @@ func getTrainsCallingAt(station_code string, station_name string, dest_code stri
 	return *journey
 }
 
-/*
-func procStop(stop TrainStop) map[string]string {
-    s = {}
-    s['station_code'] = stop.get('station_code')
-    s['station_name'] = stop.get('station_name')
-    s['expected_arrival_time'] = stop.get('expected_arrival_time')
-    s['platform'] = stop.get('platform')
-    return s
+func getStops(timetable_url string, station_code string, dest_code string, verbose bool) []TrainStop {
+	// We need to make a GET request on the timetable URL to retrieve array of stops.
+	// We are then only interested in a subset of the details fields for each stop.
+	// We also want to add whether that stop is on the designated journey or not.
+	var arr []TrainStop
+	// You can modify the request by passing an optional RequestOptions struct
+	//r = requests.get(timetable_url)
+	resp, err := grequests.Get(timetable_url, nil)
+	if err != nil {
+		log.Fatalln("Unable to make stops request: ", err)
+	}
+	respStr := resp.String()
+	stops := &TrainStops{}
+	if err := resp.JSON(stops); err != nil {
+		log.Fatal("Cannot serialize JSON: ", err)
+	}
+	on_route := false
+	for i := 0; i < len(stops.Stops); i++ {
+		stop := stops.Stops[i]
+		stationCode := stop.StationCode
+		if stationCode == station_code {
+			stop.OnRoute = true
+			on_route = true
+		} else if stationCode == dest_code {
+			stop.OnRoute = true
+			on_route = false
+		} else {
+			stop.OnRoute = on_route
+		}
+		arr = append(arr, stop)
+	}
+	if verbose {
+		fmt.Println(fmt.Sprintf("Base URL: %s", timetable_url))
+		fmt.Println(fmt.Sprintf("Response:\n%s", respStr))
+		fmt.Println(fmt.Sprintf("Stops:\n%s", stops))
+	}
+	return arr
 }
-
-func getStops(timetable_url,station_code,dest_code) {
-    // We need to make a GET request on the timetable URL to retrieve array of stops.
-    // We are then only interested in a subset of the details fields for each stop.
-    // We also want to add whether that stop is on the designated journey or not.
-    arr = []
-    r = requests.get(timetable_url)
-    stops = r.json().get('stops')
-    on_route = False
-    for stop in stops:
-        s = procStop(stop)
-        if s.get('station_code') == station_code:
-            s['on_route'] = True
-            on_route = True
-        elif s.get('station_code') == dest_code:
-            s['on_route'] = True
-            on_route = False
-        else:
-            s['on_route'] = on_route
-        arr.append(s)
-    return arr
-}
-*/
 
 func formatHeader(d TrainJourney) string {
 	header := fmt.Sprintf("==== Trains from %s (%s) to %s", d.StationName, d.StationCode, d.DestinationName)
@@ -218,11 +264,22 @@ func formatHeader(d TrainJourney) string {
 	return header
 }
 
-func formatDeparture(train TrainDeparture, stops []string, journey TrainJourney) string {
-	//source = [stop for stop in stops if stop.get('station_code') == d.get('station_code')][0]
-	//dest = [stop for stop in stops if stop.get('station_code') == d.get('destination_code')][0]
-	//route = [stop.get('station_name') for stop in stops if stop.get('on_route')]
-	route := []string{}
+func formatDeparture(train TrainDeparture, stops []TrainStop, journey TrainJourney) string {
+	var source TrainStop
+	var dest TrainStop
+	var route []TrainStop
+	for i := 0; i < len(stops); i++ {
+		stop := stops[i]
+		if stop.StationCode == journey.StationCode {
+			source = stop
+		}
+		if stop.StationCode == journey.DestinationCode {
+			dest = stop
+		}
+		if stop.OnRoute {
+			route = append(route, stop)
+		}
+	}
 	deptime := train.ExpectedDeparture
 	if len(deptime) == 0 {
 		deptime = train.AimedDeparture
@@ -230,8 +287,8 @@ func formatDeparture(train TrainDeparture, stops []string, journey TrainJourney)
 	departure := fmt.Sprintf("%s %s -> %s", journey.StationCode, deptime, journey.DestinationCode)
 	departure += fmt.Sprintf(" %s => %s\n", train.ExpectedArrival, train.Status)
 	departure += fmt.Sprintf("\tTrain %s (%s) from %s", train.TrainUid, train.Operator, train.OriginName)
-	departure += fmt.Sprintf(" arriving at %s on platform %s", journey.StationName, train.Platform)
-	departure += fmt.Sprintf(" going to %s platform %s.  %d stops:", train.DestinationName, train.Platform, len(route))
+	departure += fmt.Sprintf(" arriving at %s on platform %s", journey.StationName, source.Platform)
+	departure += fmt.Sprintf(" going to %s platform %s.  %d stops:", journey.DestinationName, dest.Platform, len(route))
 	return departure
 }
 
@@ -243,14 +300,14 @@ func formatTrains(journey TrainJourney, verbose bool) {
 	if verbose {
 		fmt.Println(fmt.Sprintf("All departures:\n%s", departures))
 	}
-	/*
-		    for train in departures{
-		        stops = getStops(train.get('service_timetable').get('id'),d.get('station_code'),d.get('destination_code'))
-		        verbose and print(f'Train {train.get("train_uid")} stopping point details:\n{stops}')
-		        trainDetails = formatDeparture(train,stops,d)
-		        printTrainDetails(trainDetails,stops)
-			}
-	*/
+	for _, train := range departures {
+		stops := getStops(train.ServiceTimetable.Url, journey.StationCode, journey.DestinationCode, verbose)
+		if verbose {
+			fmt.Println(fmt.Sprintf("Train %s stopping point details:\n%s", train.TrainUid, stops))
+		}
+		trainDetails := formatDeparture(train, stops, journey)
+		printTrainDetails(trainDetails, stops)
+	}
 }
 
 func printTrainDetails(trainDetails string, stops []TrainStop) {
@@ -266,9 +323,14 @@ func printHeader(header string) {
 }
 
 func printStopNames(stops []TrainStop) {
-	//stopNames = ','.join([stop.get('station_name') for stop in stops if stop.get('on_route')])
-	//print(f'\t{stopNames}')
-	fmt.Println("Stops TBD")
+	stopsOnRoute := ""
+	for i := 0; i < len(stops); i++ {
+		stop := stops[i]
+		if stop.OnRoute {
+			stopsOnRoute += fmt.Sprintf("%s, ", stop.StationName)
+		}
+	}
+	fmt.Println(fmt.Sprintf("\t%s\n", stopsOnRoute[:len(stopsOnRoute)-2]))
 }
 
 // ---------- main  ----------
