@@ -1,4 +1,4 @@
-# trains - Docker and Kubernetes
+# trains - Docker and Kubernetes (k8s)
 Detailed notes on building a Docker image for trains and using it in a Kubernetes cluster.
 
 ## Creating a Docker image
