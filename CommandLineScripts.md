@@ -2,7 +2,7 @@
 Walk through each of the command line tools that directly invoke an [transportapi.com](transportapi.com) endpoint.
 
 ## [trainsClient.py](python/trainsClient.py)
-Python version.
+Python version built using [`requests`](https://pypi.org/project/requests/).
 ```
 $ python trainsClient.py -h 
    trainsClient.py
@@ -100,5 +100,44 @@ OXF 15:01 -> PAD 15:59 => STARTS HERE
     Oxford,Reading,Slough,London Paddington
 ```
 
+## [trainsClient.go](go/trainsClient.go)
+Golang version built using [`grequests`](https://github.com/levigross/grequests).
+```
+$ go run . -h
+    trainsClient.go
+    ---------
+    Usage:
+    trainsClient.go <from> <to>
+    trainsClient.go -h | --help
+    trainsClient.go -V | --version
+
+    Options:
+    -h --help               Show this screen.
+    -V --version            Show version.
+
+    Examples
+    1. trains from RDG to PAD:
+    trainsClient.go RDG PAD
+```
+Here's an example invocation for trains from Oxford to London Paddington:
+```
+$ go run . OXF PAD
+=============================================================================
+==== Trains from Oxford (OXF) to London Paddington(PAD) 12:19 2019-07-16 ====
+=============================================================================
+OXF 12:31 -> PAD 12:30 => ON TIME
+	Train C20800 (GW) from Great Malvern arriving at Oxford on platform 3 going to London Paddington platform 5.  4 stops:
+	Oxford, Reading, Slough, London Paddington
+OXF 13:01 -> PAD  => STARTS HERE
+	Train C20802 (GW) from Oxford arriving at Oxford on platform 3 going to London Paddington platform 8.  4 stops:
+	Oxford, Reading, Slough, London Paddington
+OXF 13:31 -> PAD 13:24 => EARLY
+	Train C20803 (GW) from Worcester Foregate Street arriving at Oxford on platform 3 going to London Paddington platform 9.  4 stops:
+	Oxford, Reading, Slough, London Paddington
+OXF 14:01 -> PAD  => STARTS HERE
+	Train C20804 (GW) from Oxford arriving at Oxford on platform 3 going to London Paddington platform 11.  4 stops:
+	Oxford, Reading, Slough, London Paddington
+```
+
 ## Implementation notes
-The command-line scripts [trainsClient.py](python/trainsClient.py), [trainsClient.js](javascript/trainsClient.js) and [trainsAsyncAwaitClient.js](javascript/trainsAsyncAwaitClient.js) share similar structure and use `docopt` for command line argument handling.  `requests` is used for invoking [transportapi.com](transportapi.com) from Python. `node-fetch` does the equivalent job in the `node.js` environment.   Multiple calls need to be made to [transportapi.com](transportapi.com) to generate the output.  A first call is made to get information about the trains in the next 2 hour window.  Further calls need to be made on each train to get information about where it is stopping.  The results are stitched together to form the output which is printed to the console.
+The command-line scripts [trainsClient.py](python/trainsClient.py), [trainsClient.js](javascript/trainsClient.js), [trainsAsyncAwaitClient.js](javascript/trainsAsyncAwaitClient.js) and [trainsClient.go](go/trainsClient.go) share similar structure and all use `docopt` for command line argument handling.  `requests` is used for invoking [transportapi.com](transportapi.com) from Python and `grequests` performs the same job from Go.  `node-fetch` does the equivalent job in the `node.js` environment.   Multiple calls need to be made to [transportapi.com](transportapi.com) to generate the output.  A first call is made to get information about the trains in the next 2 hour window.  Further calls need to be made on each train to get information about where it is stopping.  The results are stitched together to form the output which is printed to the console.
