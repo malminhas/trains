@@ -308,6 +308,7 @@ func formatTrains(journey TrainJourney, verbose bool) {
 		trainDetails := formatDeparture(train, stops, journey)
 		printTrainDetails(trainDetails, stops)
 	}
+	fmt.Println()
 }
 
 func printTrainDetails(trainDetails string, stops []TrainStop) {
@@ -330,7 +331,7 @@ func printStopNames(stops []TrainStop) {
 			stopsOnRoute += fmt.Sprintf("%s, ", stop.StationName)
 		}
 	}
-	fmt.Println(fmt.Sprintf("\t%s\n", stopsOnRoute[:len(stopsOnRoute)-2]))
+	fmt.Println(fmt.Sprintf("\t%s", stopsOnRoute[:len(stopsOnRoute)-2]))
 }
 
 // ---------- main  ----------
