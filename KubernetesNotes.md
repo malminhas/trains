@@ -1,4 +1,5 @@
 # trains - Docker and Kubernetes
+Detailed notes on building a Docker image for trains and using it in a Kubernetes cluster.
 
 ## Creating a Docker image
 1. Create minimal Dockerfile without creds being copied over:
