@@ -34,10 +34,10 @@ Server Version: version.Info{Major:"1", Minor:"14", GitVersion:"v1.14.1", GitCom
 
 ## Running the client side command line tools
 See [here](CommandLineScripts.md) for more details on how to use each of the following client-side utilities from the command line:
-* [`trainsClient.py`](python/trainsClient.py) - Python command line interface
+* [`trainsClient.py`](python/trainsClient.py) - Python command line interface using requests
 * [`trainsClient.js`](javascript/trainsClient.js) - Javascript command line interface using promises
 * [`trainsAsyncAwaitClient.js`](javascript/trainsAsyncAwaitClient.js) - Javascript command line interface using async/await
-* [`trainsClient.go`](go/trainsClient.go) - Go command line interface (TBD)
+* [`trainsClient.go`](go/trainsClient.go) - Go command line interface using grequests and struct support
 
 ## Running the server side tools locally
 See [here](ServerSideScripts.md) for more details on how to invoke and interface with each of the following server-side utilities:
