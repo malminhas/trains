@@ -219,13 +219,8 @@ func getTrainsCallingAt(station_code string, station_name string, dest_code stri
 	return *journey
 }
 
-func getStops(timetable_url string, station_code string, dest_code string, verbose bool) []TrainStop {
-	// We need to make a GET request on the timetable URL to retrieve array of stops.
-	// We are then only interested in a subset of the details fields for each stop.
-	// We also want to add whether that stop is on the designated journey or not.
+func StopProducer(timetable_url string, station_code string, dest_code string, verbose bool, ch chan<- []TrainStop) {
 	var arr []TrainStop
-	// You can modify the request by passing an optional RequestOptions struct
-	//r = requests.get(timetable_url)
 	resp, err := grequests.Get(timetable_url, nil)
 	if err != nil {
 		log.Fatalln("Unable to make stops request: ", err)
@@ -255,7 +250,11 @@ func getStops(timetable_url string, station_code string, dest_code string, verbo
 		fmt.Println(fmt.Sprintf("Response:\n%s", respStr))
 		fmt.Println(fmt.Sprintf("Stops:\n%s", stops))
 	}
-	return arr
+	ch <- arr
+}
+
+func StopConsumer(ch <-chan []TrainStop) []TrainStop {
+	return <-ch
 }
 
 func formatHeader(d TrainJourney) string {
@@ -300,8 +299,16 @@ func formatTrains(journey TrainJourney, verbose bool) {
 	if verbose {
 		fmt.Println(fmt.Sprintf("All departures:\n%s", departures))
 	}
+	ch := make(chan []TrainStop)
 	for _, train := range departures {
-		stops := getStops(train.ServiceTimetable.Url, journey.StationCode, journey.DestinationCode, verbose)
+		// We need to make a GET request on the timetable URL to retrieve array of stops.
+		// We are then only interested in a subset of the details fields for each stop.
+		// We also want to add whether that stop is on the designated journey or not.
+		// You can modify the request by passing an optional RequestOptions struct
+		//r = requests.get(timetable_url)
+		go StopProducer(train.ServiceTimetable.Url, journey.StationCode, journey.DestinationCode, verbose, ch)
+		stops := StopConsumer(ch)
+		//stops := getStops(train.ServiceTimetable.Url, journey.StationCode, journey.DestinationCode, verbose)
 		if verbose {
 			fmt.Println(fmt.Sprintf("Train %s stopping point details:\n%s", train.TrainUid, stops))
 		}
