@@ -2,7 +2,7 @@
 Walk through each of the command line tools that directly invoke an [transportapi.com](transportapi.com) endpoint.
 
 ## [trainsClient.py](python/trainsClient.py)
-Python version built using [`requests`](https://pypi.org/project/requests/).
+Python version built using [`requests`](https://pypi.org/project/requests/) which is invoked serially making this version noticeably slower than the asynchronous JavaScript one.  It is possible to make an asynchronous version using cooperative multitasking (coroutines) per the outline [here](https://stackoverflow.com/questions/16015749/in-what-way-is-grequests-asynchronous).
 ```
 $ python trainsClient.py -h 
    trainsClient.py
@@ -41,7 +41,7 @@ OXF 15:01 -> PAD 15:59 => STARTS HERE
 ```
 
 ## [trainsClient.js](javascript/trainsClient.js)
-`node.js` version built using promise flow where code is daisy-chained in consecutive `.then()` method calls on promises and a `payload` object progressively added to along the way.  This allows a faster response than in the Python case where all the calls are made in serial.  However, the responses aren't currently time-ordered.  It's possible to improve the promise flow so that all output is deferred to the end when `payload` has completed and can be sorted.  That is tackled in the async-await version of the code:
+`node.js` version built using promise flow where code is daisy-chained in consecutive `.then()` method calls on promises and a `payload` object progressively added to along the way.  This allows a faster response than in the Python case where all the calls are made in serial.  However, the responses aren't currently time-ordered.  It's possible to improve the promise flow so that all output is deferred to the end when `payload` has completed and can be sorted.  That is tackled in the async-await version of the code covered next:
 ```
 $ node trainsClient.js -h
 trainsClient.js
@@ -80,7 +80,7 @@ OXF 14:31 -> PAD 15:35 => NO REPORT
 ```
 
 ## [trainsAsyncAwaitClient.js](javascript/trainsAsyncAwaitClient.js)
-`node.js` version built using async-await to make the code easier to follow in 'line by line' form.  Here's the same invocation as above for trains from Oxford to London Paddington this time with additional post-promise processing code to order the stations correctly:
+`node.js` version built using async-await to make the code easier to follow in 'line by line' form yet remain asynchronous.  Here's the same invocation as above for trains from Oxford to London Paddington this time with additional post-promise processing code to order the stations correctly:
 ```
 $ node trainsAsyncAwaitClient.js OXF PAD
 ==============================================================================
@@ -101,7 +101,7 @@ OXF 15:01 -> PAD 15:59 => STARTS HERE
 ```
 
 ## [trainsClient.go](go/trainsClient.go)
-Golang version built using [`grequests`](https://github.com/levigross/grequests).
+Golang version built using [`grequests`](https://github.com/levigross/grequests) and leverages structs as well as go routines for asynchronous support.  It is still noticeably slower than the asynchronous JavaScript version indicating that further optimisation could be done.
 ```
 $ go run . -h
     trainsClient.go
