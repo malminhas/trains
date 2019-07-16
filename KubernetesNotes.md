@@ -1,4 +1,4 @@
-# DOCKER AND KUBERNETES
+# trains - Docker and Kubernetes
 
 ## Creating a Docker image
 1. Create minimal Dockerfile without creds being copied over:
@@ -51,9 +51,9 @@ services:
         - ./.transportAppKey:/usr/src/app/.transportAppKey
         - ./README.md:/usr/src/app/README.md
 ```
-3. Build docker image:
+3. Build docker image locally:
 `$ docker-compose build --no-cache`
-4. Test docker image works:
+4. Test docker image works locally:
 `$ docker-compose up --force-recreate`
 5. Check what containers are running:
 `$ docker ps
@@ -66,9 +66,7 @@ CONTAINER ID        IMAGE                               COMMAND                 
  ..  .transportAppKey  expressTrains.js    package-lock.json  stationNames.js  trainsAsyncAwait.js`
 7. Check local listed docker images:
 `$ docker images`
-8. Create local docker image that adds creds and push it to DockerHub.   Note that the image pushed to DockerHub will only work in Kubernetes 
-if  `composed` Dockerfile had creds added.  Otherwise you need to add support for secrets to be handled using env variables!  
-The image being modified with `docker-compose` per above will be pushed without those additional compose modifications.
+8. Create local docker image that adds creds and push it to DockerHub.   Note that the image pushed to DockerHub will only work in Kubernetes if the `composed` Dockerfile had creds added.  Otherwise you need to add support for secrets to be handled using env variables in a `secrets.yaml`.  The image being modified with `docker-compose` per above will be pushed without those additional `docker-compose` modifications.
 `$ docker push malminhas/express-trains:composed`
 9. Check it is listed here: `https://hub.docker.com/r/malminhas/express-trains`
  
