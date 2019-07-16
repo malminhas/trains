@@ -101,7 +101,7 @@ OXF 15:01 -> PAD 15:59 => STARTS HERE
 ```
 
 ## [trainsClient.go](go/trainsClient.go)
-Golang version built using [`grequests`](https://github.com/levigross/grequests) and leverages structs as well as go routines for asynchronous support.  It is still noticeably slower than the asynchronous JavaScript version indicating that further optimisation could be done.
+Golang version built using [`grequests`](https://github.com/levigross/grequests) and leverages structs as well as go routines for asynchronous support.  It is still noticeably slower than the asynchronous JavaScript version indicating that further optimisation could be done.  The command line invocation here is required becasue the source directory contains two go files ([stationNames.go](go/stationNames.go) and [trainsClient.go](go/trainsClient.go)).
 ```
 $ go run . -h
     trainsClient.go
