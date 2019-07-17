@@ -86,7 +86,7 @@ Examples
     //const dest_name = args['<dest_name>']
 
 	console.log(`Invoking getTrains from=${station}, to=${dest}`)
-	const client = new trains_proto.TrainService('localhost:${SERVER_PORT}', grpc.credentials.createInsecure());
+	const client = new trains_proto.TrainService(`localhost:${SERVER_PORT}`, grpc.credentials.createInsecure());
 	client.getTrains({from: station, to: dest}, function(err, response) {
 		dumpObject(response);
 	  });  
