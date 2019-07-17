@@ -37,7 +37,6 @@ const AUTHOR = 'Mal Minhas'
 const PROTO_PATH = __dirname + './../trains.proto'
 const SERVER_PORT = 8001
 
-const fs = require('fs');
 const grpc = require('grpc');
 const protoLoader = require('@grpc/proto-loader');
 const packageDefinition = protoLoader.loadSync(
@@ -87,7 +86,7 @@ Examples
     //const dest_name = args['<dest_name>']
 
 	console.log(`Invoking getTrains from=${station}, to=${dest}`)
-	const client = new trains_proto.TrainService('localhost:8001', grpc.credentials.createInsecure());
+	const client = new trains_proto.TrainService('localhost:${SERVER_PORT}', grpc.credentials.createInsecure());
 	client.getTrains({from: station, to: dest}, function(err, response) {
 		dumpObject(response);
 	  });  

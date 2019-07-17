@@ -214,7 +214,7 @@ func getTrainsCallingAt(station_code string, station_name string, dest_code stri
 		pdata, _ := json.Marshal(params)
 		fmt.Println(fmt.Sprintf("Params: %s", string(pdata)))
 		fmt.Println(fmt.Sprintf("Response:\n%s", respStr))
-		fmt.Println(fmt.Sprintf("Journey:\n%s", journey))
+		fmt.Println(fmt.Sprintf("Journey:\n%+v", journey))
 	}
 	return *journey
 }
@@ -248,7 +248,7 @@ func StopProducer(timetable_url string, station_code string, dest_code string, v
 	if verbose {
 		fmt.Println(fmt.Sprintf("Base URL: %s", timetable_url))
 		fmt.Println(fmt.Sprintf("Response:\n%s", respStr))
-		fmt.Println(fmt.Sprintf("Stops:\n%s", stops))
+		fmt.Println(fmt.Sprintf("Stops:\n%+v", stops))
 	}
 	ch <- arr
 }
@@ -297,7 +297,7 @@ func formatTrains(journey TrainJourney, verbose bool) {
 	printHeader(formatHeader(journey))
 	departures := journey.Departures.All
 	if verbose {
-		fmt.Println(fmt.Sprintf("All departures:\n%s", departures))
+		fmt.Println(fmt.Sprintf("All departures:\n%+v", departures))
 	}
 	ch := make(chan []TrainStop)
 	for _, train := range departures {
@@ -310,7 +310,7 @@ func formatTrains(journey TrainJourney, verbose bool) {
 		stops := StopConsumer(ch)
 		//stops := getStops(train.ServiceTimetable.Url, journey.StationCode, journey.DestinationCode, verbose)
 		if verbose {
-			fmt.Println(fmt.Sprintf("Train %s stopping point details:\n%s", train.TrainUid, stops))
+			fmt.Println(fmt.Sprintf("Train %s stopping point details:\n%+v", train.TrainUid, stops))
 		}
 		trainDetails := formatDeparture(train, stops, journey)
 		printTrainDetails(trainDetails, stops)
