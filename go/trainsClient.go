@@ -1,10 +1,38 @@
-// trainsClient.go
-//
-// Installation:
-// ------------
-// $ export GOPATH=<full path to local directory>
-// $ go get -v github.com/docopt/docopt-go
-// $ go build -ldflags="-s -w" trains.go
+/*
+ trainsClient.go
+(c) 2019 Mal Minhas, <mal@malm.co.uk>
+
+Licence
+--------
+Copyright 2019 Mal Minhas. All Rights Reserved.
+
+Description
+-----------
+Golang CLI for interacting with transportAPI to find next trains from A to B.
+transportAPI is documented here: https://developer.transportapi.com/docs?raml=https://transportapi.com/v3/raml/transportapi.raml
+More on three letter train codes here: http://www.railwaycodes.org.uk/crs/CRS0.shtm
+The .csv used in this code is available here: https://www.nationalrail.co.uk/stations_destinations/48541.aspx
+Some examples are:
+1. London Paddington = PAD
+2. London Waterloo = WAT
+3. London Bridge = LBG
+
+Installation
+------------
+$ export GOPATH=<full path to local directory>
+$ go get -v github.com/docopt/docopt-go
+$ go build -ldflags="-s -w" trains.go
+
+Version
+-------
+16.07.19  0.1   First version
+
+Todo
+----
+Note the responses returned from this utility are NOT ordered properly in time.console.
+In order to fix that, we need to alter the promise flow to sort trains by departure time
+as we are doing in trainsAsyncAwait.js.
+*/
 
 package main
 

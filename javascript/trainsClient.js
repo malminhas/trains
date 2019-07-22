@@ -9,6 +9,7 @@ Copyright 2019 Mal Minhas. All Rights Reserved.
 
 Description
 -----------
+JavaScript CLI for interacting with transportAPI to find next trains from A to B.
 transportAPI is documented here: https://developer.transportapi.com/docs?raml=https://transportapi.com/v3/raml/transportapi.raml
 More on three letter train codes here: http://www.railwaycodes.org.uk/crs/CRS0.shtm
 Some examples are:
