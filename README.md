@@ -33,17 +33,17 @@ Server Version: version.Info{Major:"1", Minor:"14", GitVersion:"v1.14.1", GitCom
 ```
 
 ## Running the client side command line tools
-See [here](CommandLineScripts.md) for more details on how to use each of the following client-side utilities from the command line:
+See [here](CommandLineScripts.md) for more details on how to use each of the following client-side utilities from the command line which interface directly with [transportapi.com](transportapi.com):
 * [`trainsClient.py`](python/trainsClient.py) - Python command line interface using requests
 * [`trainsClient.js`](javascript/trainsClient.js) - Javascript command line interface using promises
 * [`trainsAsyncAwaitClient.js`](javascript/trainsAsyncAwaitClient.js) - Javascript command line interface using async/await
 * [`trainsClient.go`](go/trainsClient.go) - Go command line interface using grequests and struct support
 
 ## Running the server side tools locally
-See [here](ServerSideScripts.md) for more details on how to invoke and interface with each of the following server-side utilities:
+See [here](ServerSideScripts.md) for more details on how to invoke and interface with each of the following server-side utilities which wrap [transportapi.com](transportapi.com) via either a web or gRPC interface:
 * [`expressTrainsServer.js`](javascript/expressTrainsServer.js) - Javascript web app HTTP server invoked from command line with `curl` which uses [`trainsAsyncAwaitClient.js`](javascript/trainsAsyncAwaitClient.js) under the hood.
-* [`grpcTrainsServer.js`](javascript/grpcTrainsServer.js) - Javascript gRPC server built using [`trainsAsyncAwaitClient.js`](javascript/trainsAsyncAwaitClient.js) under the hood and invoked from the command line using corresponding [`grpcTrainsClient.js`](javascript/grpcTrainsClient.js).
-* [`grpcTrainsServer.go`](go/grpcTrains/server/main.go) - Go gRPC server attempts to use [`trainsClient.go`](go/trainsClient.go) under the hood and is invoked from command line using the corresponding [`grpcTrainsClient.go`](go/grpcTrains/client/main.go) Go gRPC client.  This implementation is currently incomplete.
+* [`grpcTrainsServer.js`](javascript/grpcTrainsServer.js) - Javascript gRPC server built using [`trainsAsyncAwaitClient.js`](javascript/trainsAsyncAwaitClient.js) under the hood and invoked from the command line using corresponding [`grpcTrainsClient.js`](javascript/grpcTrainsClient.js) gRPC client.
+* [`grpcTrainsServer.go`](go/grpcTrains/server/main.go) - Go gRPC server attempts to use [`trainsClient.go`](go/trainsClient.go) under the hood and is invoked from command line using the corresponding [`grpcTrainsClient.go`](go/grpcTrains/client/main.go) gRPC client.  This implementation is currently incomplete.
 
 [`expressTrainsServer.js`](javascript/expressTrainsServer.js) can be converted into a web app running in a container that can be exposed either locally via localhost or in a Kubernetes cluster.  In both cases, the container must be built with `docker` first.  In order to support this you will need the [docker-compose.yaml](javascript/docker-compose.yaml) file and underlying [Dockerfile](javascript/Dockerfile).  Assuming you have local copies of `.transportAppId` and `.transportAppKey` you can build and test a `docker` container called `express-trains` exposed on port 8001 as follows from within the `javascript` directory:
 ```
