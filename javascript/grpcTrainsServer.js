@@ -33,17 +33,17 @@ const PROTO_PATH = __dirname + './../trains.proto'
 const SERVER_PORT = 8001
 const VERSION = '0.1'
 
-const fs = require('fs');
-const trains = require('./trainsAsyncAwaitClient')
+//const protobuf = require('protobufjs');
 const grpc = require('grpc');
 const protoLoader = require('@grpc/proto-loader');
+const trains = require('./trainsAsyncAwaitClient')
 const packageDefinition = protoLoader.loadSync(
 					     PROTO_PATH,
 					     {keepCase: true,
 					      longs: String,
 					      enums: String,
 					      defaults: true,
-					      oneofs: true
+						  oneofs: true
 					     });
 const trains_proto = grpc.loadPackageDefinition(packageDefinition).trains
 
