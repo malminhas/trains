@@ -62,11 +62,11 @@ $ protoc
 ../../trains.proto --go_out=plugins=grpc:.
 ```
 The repo contains a pre-generated version of the output [go/grpcTrains/trains.pb.go](go/grpcTrains/trains.pb.go).
-A corresponding client needs to process the response according to the same definitiion.  An example client implementation, [grpcTrains/client/main.go](go/grpcTrains/client/main.go) is provided which leverages the same [go/grpcTrains/trains.pb.go](go/grpcTrains/trains.pb.go) to invoke the API.  You invoke the `protobuf.js` gRPC server as follows:
+A corresponding client needs to process the response according to the same definitiion.  An example client implementation, [grpcTrains/client/main.go](go/grpcTrains/client/main.go) is provided which leverages the same [go/grpcTrains/trains.pb.go](go/grpcTrains/trains.pb.go) to invoke the API.  You invoke the Go gRPC server as follows:
 ```
 $ go run server/main.go
 ```
-And the client thus:
+And the Go client thus:
 ```
 $ go run client/main.go PAD OXF
 ```
