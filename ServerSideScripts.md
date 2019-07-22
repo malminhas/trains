@@ -52,7 +52,24 @@ You should see this output in the browser on navigating to localhost:
 ![trains swagger documentation](trainsSwaggerUI.png)
 
 ## [grpcTrains/server/main.go](go/grpcTrains/server/main.go)
-TBD
+Go based version which creates a gRPC server listening on localhost port 8001 for input conforming to the definition laid out in the `trains.proto` file.  With this approach service descriptors and client stub definitions are generated from the [`trains.proto`](trains.proto) file using the following command assuming your Go environment is setup as above:
+```
+$ protoc 
+-I../..																	                        # generate trains.pb.go
+-I$GOPATH/src
+-I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway
+-I$GOPATH/src/github.com/grpc-ecosystem/grpc-gateway/third_party/googleapis
+../../trains.proto --go_out=plugins=grpc:.
+```
+The repo contains a pre-generated version of the output [go/grpcTrains/trains.pb.go](go/grpcTrains/trains.pb.go).
+A corresponding client needs to process the response according to the same definitiion.  An example client implementation, [grpcTrains/client/main.go](go/grpcTrains/client/main.go) is provided which leverages the same [go/grpcTrains/trains.pb.go](go/grpcTrains/trains.pb.go) to invoke the API.  You invoke the Go gRPC server as follows:
+```
+$ go run server/main.go
+```
+And the Go client thus:
+```
+$ go run client/main.go PAD OXF
+```
 
 ## Implementation notes
 The [expressTrainsServer.js](javascript/expressTrainsServer.js) script creates a server on localhost:8001 using `express.js`.  The [grpcTrainsServer.js](javascript/grpcTrainsServer.js) script provides a gRPC implementation of the service built on the [trains.proto](trains.proto) file which instantiates a [protocol buffer](https://developers.google.com/protocol-buffers/docs/proto) based definition of the interface between client and server. Both implementations are suitable for Dockerisation though [the example provided](javascript/Dockerfile) in this repository is for [expressTrainsServer.js](javascript/expressTrainsServer.js).
