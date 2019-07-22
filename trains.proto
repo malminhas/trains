@@ -1,8 +1,30 @@
 syntax = "proto3";
 
+// Note that protobuf.js didn't like the following when it was at the end of the file.  
+// On running `node grpcTrainsServer.js` we got:
+// Error: illegal token 'option' (/Users/malm/Desktop/CODE/transport/trains.proto, line 72)
+// Fix is to move it to the front of file per:
+// https://github.com/protobufjs/protobuf.js/issues/1111
+option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
+  info: {
+    title: "trains"
+    version: "1.0"
+    contact: {
+      name: "trains"
+      url: "https://github.com/malminhas/trains"
+      email: "mal@malm.co.uk"
+    }
+  }
+  schemes: HTTP
+  schemes: HTTPS
+  consumes: "application/json"
+  produces: "application/json"
+};
+
 // Note these are relative to $GOPATH/src/github.com/grpc-ecosystem/grpc-gateway
 import "third_party/googleapis/google/api/annotations.proto";
 import "protoc-gen-swagger/options/annotations.proto";
+//import "protoc-gen-swagger/options/openapiv2.proto";
 
 package trains;
 
@@ -43,7 +65,7 @@ message TrainResponse {
     string expected_departure_time = 12;
     //string best_arrival_estimate_mins
     //string best_departure_estimate_mins
-    TrainStop stops = 13;
+    repeated TrainStop stops = 13;
     //google.protobuf.Timestamp expected_arrival = 1;
     //google.protobuf.Timestamp expected_departure = 2;  
   }
@@ -66,19 +88,3 @@ service TrainService {
     };  
   }
 }
-
-option (grpc.gateway.protoc_gen_swagger.options.openapiv2_swagger) = {
-  info: {
-  title: "trains";
-  version: "1.0";
-  contact: {
-  name: "trains";
-  url: "https://github.com/malminhas/trains";
-  email: "mal@malm.co.uk";
-  };
-};
-schemes: HTTP;
-schemes: HTTPS;
-consumes: "application/json";
-produces: "application/json";
-};
