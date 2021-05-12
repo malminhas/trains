@@ -7,7 +7,7 @@
     "@grpc/proto-loader": "^0.5.1",
     "docopt": "^0.6.2",
     "express": "^4.17.1",
-    "grpc": "^1.22.0",
+    "grpc": "^1.24.9",
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {},
